@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Asistent Exerciții KinTeto</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #222; color: #eee; text-align: center; margin:0; padding:0; }
+  h1 { margin-top: 20px; }
+  #video-container { position: relative; display: inline-block; margin-top: 10px; }
+  canvas { border: 1px solid #444; background: #111; }
+  label { display: block; margin-top: 10px; }
+  input[type=range] { width: 300px; }
+  #progress { margin-top: 20px; font-size: 1.5em; }
+  #warning { color: yellow; margin-top: 10px; min-height: 24px; }
+  #instructions { max-width: 600px; margin: 20px auto; font-size: 1.1em; }
+  #loadingScreen {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #222; color: #eee; display: flex; justify-content: center; align-items: center;
+    font-size: 2em; z-index: 10;
+  }
+  button#homeBtn {
+    margin-top: 20px; padding: 12px 30px; font-size: 1.2em;
+    background-color: #28a745; border: none; border-radius: 5px;
+    color: white; cursor: pointer; transition: background-color 0.3s ease;
+  }
+  button#homeBtn:hover {
+    background-color: #218838;
+  }
+  #sideSlidersContainer {
+    display: none;
+    margin-top: 10px;
+  }
+  #sideSlidersContainer label, #sideSlidersContainer input[type=range] {
+    display: inline-block;
+    width: 45%;
+    margin: 5px 2.5%;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<h1>Asistent Exerciții KinTeto</h1>
+
+<div id="loadingScreen">Se încarcă camera, te rugăm să aștepți...</div>
+
+<div id="video-container" style="display:none;">
+  <video id="input_video" autoplay muted playsinline style="display:none;"></video>
+  <canvas id="output_canvas" width="640" height="480"></canvas>
+</div>
+
+<label for="exerciseSelect">Alege exercițiul:</label>
+<select id="exerciseSelect">
+  <option value="genoflexiuni">Genoflexiuni</option>
+  <option value="flotari">Flotări</option>
+  <option value="ridicari_brat_alternative">Ridicări braț alternative</option>
+  <option value="inclinari_cap">Înclinări cap</option>
+  <option value="miscari_mana">Mișcări mână</option>
+</select>
+
+<label for="lineTop" id="lineTopLabel">Linia sus (%)</label>
+<input type="range" id="lineTop" min="0" max="100" value="40">
+
+<label for="lineBottom" id="lineBottomLabel">Linia jos (%)</label>
+<input type="range" id="lineBottom" min="0" max="100" value="70">
+
+<div id="sideSlidersContainer">
+  <label for="sideLeft">Margine stânga (%)</label>
+  <input type="range" id="sideLeft" min="0" max="100" value="20">
+  <label for="sideRight">Margine dreapta (%)</label>
+  <input type="range" id="sideRight" min="0" max="100" value="80">
+</div>
+
+<div id="progress">Repetări: 0</div>
+<div id="warning"></div>
+<p id="instructions"></p>
+
+<p style="font-style: italic; font-size: 0.9em; color: #aaa; margin-top: 10px;">
+  Poate dura puțin până când imaginea apare
+</p>
+
+<button id="homeBtn" onclick="window.location.href='https://kintetosv.github.io/kinetoterapie/ '">Acasă</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/pose.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<script>
+  const videoElement = document.getElementById('input_video');
+  const canvasElement = document.getElementById('output_canvas');
+  const canvasCtx = canvasElement.getContext('2d');
+  const loadingScreen = document.getElementById('loadingScreen');
+  const videoContainer = document.getElementById('video-container');
+  const exerciseSelect = document.getElementById('exerciseSelect');
+  const lineTopSlider = document.getElementById('lineTop');
+  const lineBottomSlider = document.getElementById('lineBottom');
+  const sideSlidersContainer = document.getElementById('sideSlidersContainer');
+  const sideLeftSlider = document.getElementById('sideLeft');
+  const sideRightSlider = document.getElementById('sideRight');
+  const progressDiv = document.getElementById('progress');
+  const warningDiv = document.getElementById('warning');
+  const instructionsP = document.getElementById('instructions');
+  const lineTopLabel = document.getElementById('lineTopLabel');
+  const lineBottomLabel = document.getElementById('lineBottomLabel');
+
+  let counter = 0;
+  let stage = null;
+  let cameraStarted = false;
+
+  // Pentru ridicari brat alternative
+  let altState = null;  // 'left_down', 'left_up', 'right_down', 'right_up'
+  let altLeftDone = false;
+  let altRightDone = false;
+
+  // Instrucțiuni exerciții
+  const exerciseInstructions = {
+    genoflexiuni: "Coboară încet până când capul tău trece linia de jos, apoi ridică-te peste linia de sus. Folosește slider-ele pentru reglaj.",
+    flotari: "Coboară capul peste linia de jos și ridică-l peste linia de sus. Folosește slider-ele pentru reglaj.",
+    ridicari_brat_alternative: "Ridică alternativ brațul stâng și apoi pe cel drept peste linia de sus, apoi coboară-l sub linia de jos.",
+    inclinari_cap: "Înclină capul stânga-dreapta peste marginile laterale verzi (slider-ele de margine).",
+    miscari_mana: "Roteste Bazinul cu ambele maini inainte atingand astfel in ordine marginea stanga apoi marginea dprepta"
+  };
+
+  // Config implicită per exercițiu
+  const exerciseSettings = {
+    genoflexiuni: { lineTop: 40, lineBottom: 70, sideMargins: false },
+    flotari: { lineTop: 40, lineBottom: 70, sideMargins: false },
+    ridicari_brat_alternative: { lineTop: 30, lineBottom: 80, sideMargins: false },
+    inclinari_cap: { sideMargins: true },
+    miscari_mana: { sideMargins: true }
+  };
+
+  function updateInstructions() {
+    const ex = exerciseSelect.value;
+    instructionsP.textContent = exerciseInstructions[ex] || "";
+    const settings = exerciseSettings[ex] || {};
+    if(settings.sideMargins) {
+      sideSlidersContainer.style.display = "block";
+      lineTopSlider.style.display = "none";
+      lineBottomSlider.style.display = "none";
+      lineTopLabel.style.display = "none";
+      lineBottomLabel.style.display = "none";
+    } else {
+      sideSlidersContainer.style.display = "none";
+      lineTopSlider.style.display = "inline-block";
+      lineBottomSlider.style.display = "inline-block";
+      lineTopLabel.style.display = "block";
+      lineBottomLabel.style.display = "block";
+      if(settings.lineTop !== undefined) lineTopSlider.value = settings.lineTop;
+      if(settings.lineBottom !== undefined) lineBottomSlider.value = settings.lineBottom;
+    }
+    resetCountersAndStates();
+  }
+
+  function resetCountersAndStates() {
+    counter = 0;
+    stage = null;
+    altState = null;
+    altLeftDone = false;
+    altRightDone = false;
+    progressDiv.textContent = `Repetări: ${counter}`;
+    warningDiv.textContent = "";
+  }
+
+  exerciseSelect.addEventListener('change', () => {
+    updateInstructions();
+  });
+
+  updateInstructions();
+
+  // Setup MediaPipe Pose
+  const pose = new Pose({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/${file}`
+  });
+
+  pose.setOptions({
+    modelComplexity: 1,
+    smoothLandmarks: true,
+    enableSegmentation: false,
+    smoothSegmentation: false,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+
+  pose.onResults(onResults);
+
+  let camera = null;
+  async function startCamera() {
+    camera = new Camera(videoElement, {
+      onFrame: async () => {
+        await pose.send({image: videoElement});
+      },
+      width: 640,
+      height: 480
+    });
+    await camera.start();
+    cameraStarted = true;
+    loadingScreen.style.display = "none";
+    videoContainer.style.display = "inline-block";
+  }
+  startCamera();
+
+  function onResults(results) {
+    canvasCtx.save();
+
+    // Clear
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+    // Flip canvas horizontally (mirror) for correct camera view
+    canvasCtx.translate(canvasElement.width, 0);
+    canvasCtx.scale(-1, 1);
+
+    // Draw the video frame
+    canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+    const landmarks = results.poseLandmarks;
+
+    if (!landmarks) {
+      canvasCtx.restore();
+      return;
+    }
+
+    const ex = exerciseSelect.value;
+
+    // Calculează pozițiile sliderelor ca pixeli pe canvas
+    const lineTopY = (lineTopSlider.value / 100) * canvasElement.height;
+    const lineBottomY = (lineBottomSlider.value / 100) * canvasElement.height;
+
+    const sideMarginLeftX = (sideLeftSlider.value / 100) * canvasElement.width;
+    const sideMarginRightX = (sideRightSlider.value / 100) * canvasElement.width;
+
+    // Desenează liniile pentru exerciții care folosesc top/bottom
+    if (!exerciseSettings[ex]?.sideMargins) {
+      // Linia sus - roșu
+      canvasCtx.strokeStyle = "red";
+      canvasCtx.lineWidth = 2;
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(0, lineTopY);
+      canvasCtx.lineTo(canvasElement.width, lineTopY);
+      canvasCtx.stroke();
+
+      // Linia jos - roșu
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(0, lineBottomY);
+      canvasCtx.lineTo(canvasElement.width, lineBottomY);
+      canvasCtx.stroke();
+    }
+
+    // Pentru inclinari cap și miscari mana - margini verticale verzi în stânga și dreapta
+    if (exerciseSettings[ex]?.sideMargins) {
+      canvasCtx.strokeStyle = "lime";
+      canvasCtx.lineWidth = 3;
+      // margine stanga
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(sideMarginLeftX, 0);
+      canvasCtx.lineTo(sideMarginLeftX, canvasElement.height);
+      canvasCtx.stroke();
+      // margine dreapta
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(sideMarginRightX, 0);
+      canvasCtx.lineTo(sideMarginRightX, canvasElement.height);
+      canvasCtx.stroke();
+    }
+
+    // Desenează landmark-urile MediaPipe
+    drawConnectors(canvasCtx, landmarks, POSE_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
+    drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1});
+
+    // Handle exerciții
+
+    switch(ex) {
+      case 'genoflexiuni':
+        handleGenoflexiuni(landmarks, lineTopY, lineBottomY);
+        break;
+      case 'flotari':
+        handleFlotari(landmarks, lineTopY, lineBottomY);
+        break;
+      case 'ridicari_brat_alternative':
+        handleRidicariBratAlternative(landmarks, lineTopY, lineBottomY);
+        break;
+      case 'inclinari_cap':
+        handleInclinariCap(landmarks, sideMarginLeftX, sideMarginRightX);
+        break;
+      case 'miscari_mana':
+        handleMiscariMana(landmarks, sideMarginLeftX, sideMarginRightX);
+        break;
+    }
+
+    canvasCtx.restore();
+  }
+
+  // GENOFLEXIUNI: folosim cap (landmark 0)
+  function handleGenoflexiuni(landmarks, topLine, bottomLine) {
+    const headY = landmarks[0].y * canvasElement.height;
+    if (stage === null || stage === "up") {
+      if (headY > bottomLine) {
+        stage = "down";
+        warningDiv.textContent = "Genoflexiune: în jos";
+      }
+    }
+    if (stage === "down") {
+      if (headY < topLine) {
+        stage = "up";
+        counter++;
+        progressDiv.textContent = `Repetări: ${counter}`;
+        warningDiv.textContent = "Genoflexiune: în sus - repetare!";
+      }
+    }
+  }
+
+  // FLOTARI: folosim cap (landmark 0)
+  function handleFlotari(landmarks, topLine, bottomLine) {
+    const headY = landmarks[0].y * canvasElement.height;
+    if (stage === null || stage === "up") {
+      if (headY > bottomLine) {
+        stage = "down";
+        warningDiv.textContent = "Flotare: în jos";
+      }
+    }
+    if (stage === "down") {
+      if (headY < topLine) {
+        stage = "up";
+        counter++;
+        progressDiv.textContent = `Repetări: ${counter}`;
+        warningDiv.textContent = "Flotare: în sus - repetare!";
+      }
+    }
+  }
+
+  // RIDICARI BRAT ALTERNATIVE
+  function handleRidicariBratAlternative(landmarks, topLine, bottomLine) {
+    const handLeftY = landmarks[15].y * canvasElement.height;
+    const handRightY = landmarks[16].y * canvasElement.height;
+
+    if(altState === null) {
+      // pornim așteptând mâna stângă jos și mâna dreaptă jos
+      if(handLeftY > bottomLine && handRightY > bottomLine) {
+        altState = 'left_down';
+        altLeftDone = false;
+        altRightDone = false;
+        warningDiv.textContent = "Ridică brațul stâng!";
+      }
+    } else if(altState === 'left_down') {
+      if(handLeftY < topLine) {
+        altState = 'left_up';
+        altLeftDone = true;
+        warningDiv.textContent = "Braț stâng ridicat!";
+      }
+    } else if(altState === 'left_up') {
+      if(handLeftY > bottomLine) {
+        altState = 'right_down';
+        warningDiv.textContent = "Ridică brațul drept acum.";
+      }
+    } else if(altState === 'right_down') {
+      if(handRightY < topLine) {
+        altState = 'right_up';
+        altRightDone = true;
+        warningDiv.textContent = "Braț drept ridicat!";
+      }
+    } else if(altState === 'right_up') {
+      if(handRightY > bottomLine) {
+        if(altLeftDone && altRightDone) {
+          counter++;
+          progressDiv.textContent = `Repetări: ${counter}`;
+          warningDiv.textContent = "Repetare completă!";
+        }
+        altState = 'left_down';
+        altLeftDone = false;
+        altRightDone = false;
+        warningDiv.textContent = "Ridică brațul stâng!";
+      }
+    }
+  }
+
+  // INCLINARI CAP: folosim cap (landmark 0)
+  function handleInclinariCap(landmarks, sideLeft, sideRight) {
+    const headX = landmarks[0].x * canvasElement.width;
+
+    if(stage === null) {
+      if(headX < sideLeft) {
+        stage = 'left';
+        counter++;
+        warningDiv.textContent = "Cap înclinat spre stânga";
+        progressDiv.textContent = `Repetări: ${counter}`;
+      } else if(headX > sideRight) {
+        stage = 'right';
+        counter++;
+        warningDiv.textContent = "Cap înclinat spre dreapta";
+        progressDiv.textContent = `Repetări: ${counter}`;
+      }
+    } else if(stage === 'left') {
+      if(headX >= sideLeft && headX <= sideRight) {
+        stage = null;
+        warningDiv.textContent = "Cap poziție neutră";
+      }
+    } else if(stage === 'right') {
+      if(headX >= sideLeft && headX <= sideRight) {
+        stage = null;
+        warningDiv.textContent = "Cap poziție neutră";
+      }
+    }
+  }
+
+  // MISCARI MANA: folosim mana dreaptă (landmark 16)
+  function handleMiscariMana(landmarks, sideLeft, sideRight) {
+    const handX = landmarks[16].x * canvasElement.width;
+    if(stage === null) {
+      if(handX < sideLeft) {
+        stage = 'left';
+        counter++;
+        warningDiv.textContent = "Mână spre stânga";
+        progressDiv.textContent = `Repetări: ${counter}`;
+      } else if(handX > sideRight) {
+        stage = 'right';
+        counter++;
+        warningDiv.textContent = "Mână spre dreapta";
+        progressDiv.textContent = `Repetări: ${counter}`;
+      }
+    } else if(stage === 'left') {
+      if(handX >= sideLeft && handX <= sideRight) {
+        stage = null;
+        warningDiv.textContent = "Mână poziție neutră";
+      }
+    } else if(stage === 'right') {
+      if(handX >= sideLeft && handX <= sideRight) {
+        stage = null;
+        warningDiv.textContent = "Mână poziție neutră";
+      }
+    }
+  }
+
+</script>
+
+</body>
+</html>
