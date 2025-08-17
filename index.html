@@ -6,6 +6,9 @@
 <title>KinTeto - Pagina Principală</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 <style>
+/* ======================= */
+/* General & Body          */
+/* ======================= */
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
@@ -14,112 +17,140 @@ body {
   color: #FFD700;
 }
 
-/* Canvas pentru ninsoare */
+/* ======================= */
+/* Canvas pentru ninsoare   */
+/* ======================= */
 #snow-canvas {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   z-index: 0;
 }
 
-/* Navbar */
+/* ======================= */
+/* Navbar & Logo           */
+/* ======================= */
+.logo {
+  position: fixed;
+  top: 2vh;
+  left: 2vw;
+  height: 10vh;
+  width: auto;
+  z-index: 1100;
+}
+
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
   background: rgba(0,0,0,0.85);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  padding: 0.5rem 1rem;
+  padding: 1.5vh 0;
   box-shadow: 0 0.2rem 0.8rem rgba(0,0,0,0.9);
   z-index: 1000;
 }
 
-.navbar ul {
-  margin: 0; padding: 0; list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2vw;
+.navbar ul { 
+  margin: 0; padding: 0; list-style: none; 
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 2vw;
 }
 
 .navbar a {
-  text-decoration: none; color: #FFD700; font-weight: 600;
-  font-size: 1rem; padding: 0.5rem 1rem; border-radius: 0.5rem;
+  text-decoration: none; 
+  color: #FFD700; 
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
   transition: background-color 0.3s ease;
 }
 .navbar a:hover { background: #FFD700; color: #000; }
 
-/* Logo în navbar */
-.logo {
-  height: 5vh;
-  width: auto;
-  margin-right: 1rem;
-}
-
-/* Sectiuni */
+/* ======================= */
+/* Sectiuni                */
+/* ======================= */
 section {
-  max-width: 900px;
-  margin: 150px auto 50px auto;
+  max-width: 90%;
+  margin: 15vh auto 5vh auto;
   background: rgba(0,0,0,0.75);
-  padding: 30px 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px #FFD700;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 1rem #FFD700;
   position: relative;
   z-index: 1;
 }
 
-/* Stil ASCII pentru titluri */
+/* ======================= */
+/* Titluri ASCII           */
+/* ======================= */
 .ascii-title {
   font-family: monospace;
   white-space: pre;
-  font-size: 20px;
+  font-size: 3vw; 
   line-height: 1.1;
   text-align: center;
   display: block;
   animation: neonPulse 1.5s infinite alternate;
-  margin: 0 0 20px 0;
+  margin: 0 0 2vh 0;
   z-index: 1;
   position: relative;
 }
 
-/* Animație neon galben-alb */
 @keyframes neonPulse {
-  0% { color: #FFD700; text-shadow: 0 0 5px #FFD700; }
-  50% { color: #FFFF99; text-shadow: 0 0 15px #FFFF99; }
-  100% { color: #FFD700; text-shadow: 0 0 5px #FFD700; }
+  0% { color: #FFD700; text-shadow: 0 0 0.3rem #FFD700; }
+  50% { color: #FFFF99; text-shadow: 0 0 0.8rem #FFFF99; }
+  100% { color: #FFD700; text-shadow: 0 0 0.3rem #FFD700; }
 }
 
-/* Text normal */
-p { line-height: 1.6; color: #fffacd; }
+/* ======================= */
+/* Text Normal             */
+/* ======================= */
+p { 
+  line-height: 1.6; 
+  color: #fffacd; 
+  font-size: 1.2vw;
+}
 
-/* Containere externe */
+/* ======================= */
+/* Containere externe       */
+/* ======================= */
 .external-content {
-  margin-top: 20px; min-height: 200px;
-  border: 2px dashed #FFD700; border-radius: 8px;
+  margin-top: 2vh; 
+  min-height: 20vh;
+  border: 0.2rem dashed #FFD700; 
+  border-radius: 0.5rem;
   background: rgba(255, 215, 0, 0.1);
-  color: #eee; display: none;
-  align-items: center; justify-content: center;
-  font-style: italic; font-size: 1.1rem;
+  color: #eee; 
+  display: none;
+  align-items: center; 
+  justify-content: center;
+  font-style: italic; 
+  font-size: 1rem;
 }
 
-/* ===== Responsive pe telefoane ===== */
-@media (max-width: 600px) {
-  .logo { height: 4vh; }
-  .navbar ul { flex-direction: column; width: 100%; }
-  .navbar a { font-size: 0.9rem; padding: 0.5rem 0; }
+/* ======================= */
+/* Ascunde logo-ul pe telefoane */
+/* ======================= */
+@media (max-width: 768px) {
+  .logo {
+    display: none;
+  }
 }
 </style>
 </head>
 <body>
 
+<!-- Canvas pentru ninsoare -->
 <canvas id="snow-canvas"></canvas>
 
+<!-- Logo -->
+<img src="https://i.imgur.com/wgLf9sU.jpeg" alt="Logo KinTeto" class="logo">
+
+<!-- Navbar -->
 <nav class="navbar">
-  <img src="https://i.imgur.com/wgLf9sU.jpeg" alt="Logo KinTeto" class="logo">
   <ul>
     <li><a href="#pagina-principala">Pagina Principală</a></li>
     <li><a href="https://ro.wikipedia.org/wiki/Kinetoterapie" target="_blank">Despre Kinetoterapie</a></li>
@@ -128,6 +159,7 @@ p { line-height: 1.6; color: #fffacd; }
   </ul>
 </nav>
 
+<!-- Pagina Principală -->
 <section id="pagina-principala">
   <h1 class="ascii-title">
  ____  __.__     ___________     __          
@@ -138,17 +170,19 @@ p { line-height: 1.6; color: #fffacd; }
         \/       \/           \/             
   </h1>
   <p>KinTeto oferă servicii profesionale de kinetoterapie la domiciliu, combinând experiența umană cu tehnologia modernă pentru a vă ajuta să vă recuperați confortabil și eficient.</p>
-  <p>Numar de contact si programari : 0770 357 800 - Muntean Emanuel - Kinetoterapeut</p>
+  <p>Număr de contact și programări: 0770 357 800 - Muntean Emanuel - Kinetoterapeut</p>
   <p>Ne desfășurăm activitatea pe raza orașului Suceava și a comunelor limitrofe.</p>
   <div class="external-content" id="content-pagina-principala"></div>
 </section>
 
+<!-- Despre Kinetoterapie -->
 <section id="despre-kinetoterapie">
   <h2 class="ascii-title">DESPRE KINETOTERAPIE</h2>
   <p>Kinetoterapia este ramura medicinei care se ocupă cu prevenirea, recuperarea și reabilitarea funcțională a organismului prin metode terapeutice specifice, precum exercițiile fizice personalizate și tratamentele adaptate fiecărui pacient, având ca scop îmbunătățirea mobilității și ameliorarea durerilor.</p>
   <div class="external-content" id="content-despre-kinetoterapie"></div>
 </section>
 
+<!-- Servicii și Tarife -->
 <section id="servicii-tarife">
   <h2 class="ascii-title">SERVICII ȘI TARIFE</h2>
   <p>Oferim o gamă completă de servicii de kinetoterapie adaptate nevoilor fiecărui pacient, cu tarife transparente și competitive. Prețul final se stabilește în momentul programării și poate varia în funcție de mai mulți factori.</p>
@@ -156,14 +190,15 @@ p { line-height: 1.6; color: #fffacd; }
   <div class="external-content" id="content-servicii-tarife"></div>
 </section>
 
+<!-- Asistent Virtual -->
 <section id="asistent-virtual">
   <h2 class="ascii-title">ASISTENT VIRTUAL</h2>
   <p>Asistentul nostru virtual AI oferă suport personalizat pentru antrenamente, monitorizând poziția corpului și corectând mișcările în timp real. Aplicația urmărește progresul tău pe măsură ce te antrenezi și oferă feedback adaptat nevoilor tale. Versiunea publică disponibilă este un demo, care îți permite să experimentezi funcționalitățile principale.</p>
   <div class="external-content" id="content-asistent-virtual"></div>
 </section>
 
+<!-- Script pentru ninsoare -->
 <script>
-// Setup canvas ninsoare
 const canvas = document.getElementById('snow-canvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -171,6 +206,7 @@ canvas.height = window.innerHeight;
 
 const numFlakes = 400;
 const flakes = [];
+
 for (let i = 0; i < numFlakes; i++) {
   flakes.push({
     x: Math.random() * canvas.width,
@@ -199,9 +235,9 @@ function drawSnow() {
     flake.x += Math.sin(flake.angle) * 1;
     flake.angle += flake.spin;
 
-    if (flake.y > canvas.height + flake.radius) flake.y = -flake.radius;
-    if (flake.x > canvas.width + flake.radius) flake.x = -flake.radius;
-    if (flake.x < -flake.radius) flake.x = canvas.width + flake.radius;
+    if (flake.y > canvas.height) flake.y = -flake.radius;
+    if (flake.x > canvas.width) flake.x = 0;
+    if (flake.x < 0) flake.x = canvas.width;
   }
   requestAnimationFrame(drawSnow);
 }
