@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+  <!-- Vechiul URL, redirect către root -->
+  <url>
+    <loc>https://kintetosv.github.io/kinetoterapie/</loc>
+    <lastmod>2025-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.0</priority>
+  </url>
+
+  <!-- Homepage -->
   <url>
     <loc>https://kintetosv.github.io/</loc>
-    <lastmod>2025-09-05</lastmod>
+    <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
+  <!-- Index / altă pagină principală -->
   <url>
     <loc>https://kintetosv.github.io/index.html</loc>
-    <lastmod>2025-09-05</lastmod>
+    <lastmod>2025-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
+  <!-- Demo -->
   <url>
     <loc>https://kintetosv.github.io/demo.html</loc>
     <lastmod>2025-09-05</lastmod>
@@ -22,6 +33,7 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Servicii -->
   <url>
     <loc>https://kintetosv.github.io/servicii.html</loc>
     <lastmod>2025-09-05</lastmod>
