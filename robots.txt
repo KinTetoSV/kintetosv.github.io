@@ -1,7 +1,3 @@
-User-agent: Googlebot
-Disallow:
-
-User-agent: Bingbot
-Disallow:
-
-Sitemap: https://kintetosv.github.io/kinetoterapie/sitemap.xml
+User-agent: *
+Allow: /
+Sitemap: https://kintetosv.github.io/sitemap.xml
