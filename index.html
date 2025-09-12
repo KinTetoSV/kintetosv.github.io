@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+meta name="viewport" content="width=device-width, initial-scale=1.1, maximum-scale=2" />
 <meta name="author" content="KinTeto - Muntean Emanuel">
  <meta name="keywords" content="kinetoterapie, kinteto, recuperare medicală, masaj Suceava, masaj terapeutic, masaj relaxare, SPA Suceava, tratament recuperare, aromaterapie, reflexoterapie, terapie cu pietre calde , kinteto , kinetoterapie suceava , fizioterapie suceava , kinetoterapie , fizioterapie , tratament ,">
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -412,6 +412,38 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
 });
 </script>
+<script>
+function adjustSiteScale() {
+  const viewportWidth = window.innerWidth;
+  const html = document.documentElement;
+  let baseFontSize = 16; // dimensiunea standard pentru desktop
 
+  // Ajustare font-size în funcție de lățimea ecranului
+  if(viewportWidth < 360) {
+    html.style.fontSize = "14px"; // telefoane foarte mici
+  } else if(viewportWidth >= 360 && viewportWidth < 480) {
+    html.style.fontSize = "15px"; // telefoane mici
+  } else if(viewportWidth >= 480 && viewportWidth < 768) {
+    html.style.fontSize = "16px"; // telefoane medii / tablete mici
+  } else if(viewportWidth >= 768 && viewportWidth < 1200) {
+    html.style.fontSize = "18px"; // tablete mari / laptopuri mici
+  } else {
+    html.style.fontSize = "20px"; // desktop
+  }
+
+  // Optional: scalează alte elemente dacă ai nevoie
+  const buttons = document.querySelectorAll("button, a.button");
+  buttons.forEach(btn => {
+    btn.style.fontSize = (parseInt(html.style.fontSize) * 1) + "px";
+    btn.style.padding = "12px 20px";
+  });
+}
+
+// Rulează la încărcarea paginii
+adjustSiteScale();
+
+// Rulează și la redimensionare
+window.addEventListener("resize", adjustSiteScale);
+</script>
 </body>
 </html>
