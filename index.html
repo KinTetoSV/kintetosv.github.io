@@ -412,37 +412,34 @@ window.addEventListener('resize', () => {
 });
 </script>
 <script>
-function adjustSiteScale() {
+function scaleSiteForMobile() {
   const viewportWidth = window.innerWidth;
   const html = document.documentElement;
-  let baseFontSize = 16; // dimensiunea standard pentru desktop
 
-  // Ajustare font-size în funcție de lățimea ecranului
+  let scale = 1; // scala implicită
+
+  // ajustează în funcție de lățimea ecranului
   if(viewportWidth < 360) {
-    html.style.fontSize = "14px"; // telefoane foarte mici
+    scale = 1.2; // telefoane foarte mici
   } else if(viewportWidth >= 360 && viewportWidth < 480) {
-    html.style.fontSize = "15px"; // telefoane mici
+    scale = 1.15; // telefoane mici
   } else if(viewportWidth >= 480 && viewportWidth < 768) {
-    html.style.fontSize = "16px"; // telefoane medii / tablete mici
-  } else if(viewportWidth >= 768 && viewportWidth < 1200) {
-    html.style.fontSize = "18px"; // tablete mari / laptopuri mici
+    scale = 1.1; // telefoane medii / tablete mici
   } else {
-    html.style.fontSize = "20px"; // desktop
+    scale = 1; // tablete mari și desktop
   }
 
-  // Optional: scalează alte elemente dacă ai nevoie
-  const buttons = document.querySelectorAll("button, a.button");
-  buttons.forEach(btn => {
-    btn.style.fontSize = (parseInt(html.style.fontSize) * 1) + "px";
-    btn.style.padding = "12px 20px";
-  });
+  // aplică scale prin transform CSS
+  html.style.transformOrigin = "top left";
+  html.style.transform = `scale(${scale})`;
+  html.style.width = `${100/scale}%`; // păstrează layout-ul corect
 }
 
-// Rulează la încărcarea paginii
-adjustSiteScale();
+// rulează la încărcare
+scaleSiteForMobile();
 
-// Rulează și la redimensionare
-window.addEventListener("resize", adjustSiteScale);
+// rulează și la redimensionare
+window.addEventListener("resize", scaleSiteForMobile);
 </script>
 </body>
 </html>
