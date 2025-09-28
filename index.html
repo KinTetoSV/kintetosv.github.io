@@ -1,446 +1,880 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-<meta charset="UTF-8">
-<meta name="author" content="KinTeto - Muntean Emanuel">
-<meta name="keywords" content="kinetoterapie la domiciliu, kinetoterapie Suceava, kinteto, recuperare medicală Suceava, masaj terapeutic Suceava, masaj de relaxare, masaj SPA Suceava, tratament recuperare, aromaterapie, reflexoterapie, terapie cu pietre calde, fizioterapie Suceava, terapie la domiciliu, antrenament recuperare, kinetoexpress, fiziomed, constantinescu">
-<meta name="viewport" content="width=device-width,initial-scale=1" />
- <meta name="description" content="KinTeto oferă kinetoterapie la domiciliu în Suceava, masaj terapeutic și recuperare medicală pentru adulți și copii.">
- <link rel="icon" type="image/png" href="https://i.imgur.com/wgLf9sU.jpeg">
-<link rel="apple-touch-icon" href="https://i.imgur.com/wgLf9sU.jpeg">
- <meta property="og:image" content="https://i.imgur.com/wgLf9sU.jpeg">
- <title>KinTeto - Kinetoterapie la Domiciliu Suceava</title> 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
- <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-N16X1TBVEL"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-N16X1TBVEL');
-</script>
-<style>
-/* ======================= */
-/* General & Body          */
-/* ======================= */
-body {
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  overflow-x: hidden;
-  background: black;
-  color: #FFD700;
-}
-
-/* ======================= */
-/* Canvas pentru ninsoare   */
-/* ======================= */
-#snow-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-}
-
-/* ======================= */
-/* Navbar & Logo           */
-/* ======================= */
-.logo {
-  position: fixed;
-  top: 2vh;
-  left: 2vw;
-  height: 10vh;
-  width: auto;
-  z-index: 1100;
-}
-
-.navbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: 1.5vh 0;
-  box-shadow: 0 0.2rem 0.8rem rgba(0,0,0,0.9);
-  z-index: 1000;
-}
-
-.navbar ul { 
-  margin: 0; padding: 0; list-style: none; 
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 2vw;
-}
-
-.navbar a {
-  text-decoration: none; 
-  color: #FFD700; 
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.3s ease;
-}
-.navbar a:hover { background: #FFD700; color: #000; }
-
-/* ======================= */
-/* Sectiuni                */
-/* ======================= */
-section {
-  max-width: 90%;
-  margin: 15vh auto 5vh auto;
-  background: rgba(0,0,0,0.75);
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 0 1rem #FFD700;
-  position: relative;
-  z-index: 1;
-}
-
-/* ======================= */
-/* Titluri ASCII           */
-/* ======================= */
-.ascii-title {
-  font-family: monospace;
-  white-space: pre;
-  font-size: 3vw; 
-  line-height: 1.1;
-  text-align: center;
-  display: block;
-  animation: neonPulse 1.5s infinite alternate;
-  margin: 0 0 2vh 0;
-  z-index: 1;
-  position: relative;
-}
-
-@keyframes neonPulse {
-  0% { color: #FFD700; text-shadow: 0 0 0.3rem #FFD700; }
-  50% { color: #FFFF99; text-shadow: 0 0 0.8rem #FFFF99; }
-  100% { color: #FFD700; text-shadow: 0 0 0.3rem #FFD700; }
-}
-
-/* ======================= */
-/* Text Normal             */
-/* ======================= */
-p { 
-  line-height: 1.6; 
-  color: #fffacd; 
-  font-size: 1.2vw;
-}
-
-/* ======================= */
-/* Containere externe       */
-/* ======================= */
-.external-content {
-  margin-top: 2vh; 
-  min-height: 20vh;
-  border: 0.2rem dashed #FFD700; 
-  border-radius: 0.5rem;
-  background: rgba(255, 215, 0, 0.1);
-  color: #eee; 
-  display: none;
-  align-items: center; 
-  justify-content: center;
-  font-style: italic; 
-  font-size: 1rem;
-}
-
-/* ======================= */
-/* Ascunde logo-ul pe telefoane */
-/* ======================= */
-@media (max-width: 768px) {
-  .logo {
-    display: none;
-  }
-}
-</style>
-</head>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "KinTeto",
-  "url": "https://kintetosv.github.io/",
-  "logo": "https://i.imgur.com/wgLf9sU.jpeg",
-  "description": "KinTeto oferă servicii de kinetoterapie la domiciliu, masaj terapeutic și recuperare medicală pentru adulți și copii. Activăm în Suceava și în zonele limitrofe, dar și în Ilfov.",
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+40 770 357 800",
-    "contactType": "customer service",
-    "areaServed": "RO"
-  },
-  "sameAs": [
-    "https://www.facebook.com/share/1BVfktq1h4/",
-    "https://kintetosv.github.io/kinetoterapie/"
-  ],
-  "department": [
+ <script async src="https://www.googletagmanager.com/gtag/js?id=G-N16X1TBVEL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-N16X1TBVEL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KinTeto - Kinetoterapie la Domiciliu Suceava | Recuperare Medicală</title>
+    <meta name="description" content="KinTeto oferă servicii profesionale de kinetoterapie la domiciliu în Suceava. Recuperare medicală, masaj terapeutic și programe personalizate pentru adulți și copii.">
+    <meta name="keywords" content="kinetoterapie la domiciliu, kinetoterapie Suceava, recuperare medicală, masaj terapeutic, fizioterapie, terapie la domiciliu">
+    <meta name="author" content="KinTeto - Muntean Emanuel">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="KinTeto - Kinetoterapie la Domiciliu Suceava">
+    <meta property="og:description" content="Servicii profesionale de kinetoterapie la domiciliu în Suceava. Recuperare medicală și programe personalizate.">
+    <meta property="og:image" content="https://i.imgur.com/wgLf9sU.jpeg">
+    <meta property="og:url" content="https://kintetosv.github.io/">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://i.imgur.com/wgLf9sU.jpeg">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/wgLf9sU.jpeg">
+    
+    <!-- Preconnect pentru performanță -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
     {
-      "@type": "LocalBusiness",
-      "name": "KinTeto - Suceava Centru",
-      "image": "https://i.imgur.com/wgLf9sU.jpeg",
+      "@context": "https://schema.org",
+      "@type": "MedicalBusiness",
+      "name": "KinTeto",
+      "description": "Servicii de kinetoterapie la domiciliu în Suceava și împrejurimi",
+      "url": "https://kintetosv.github.io/",
+      "telephone": "+40-770-357-800",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Zona Centru",
         "addressLocality": "Suceava",
         "addressRegion": "SV",
-        "postalCode": "720001",
         "addressCountry": "RO"
       },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "47.6424",
-        "longitude": "26.2529"
-      },
-      "telephone": "+40 770 357 800",
+      "areaServed": ["Suceava", "Burdujeni", "Ițcani", "Bosanci", "Ipotești", "Tisăuți", "Ilfov"],
+      "openingHours": "Mo-Su 08:00-20:00",
       "priceRange": "$$"
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": "KinTeto - Burdujeni",
-      "image": "https://i.imgur.com/wgLf9sU.jpeg",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Suceava - Burdujeni",
-        "addressRegion": "SV",
-        "postalCode": "720231",
-        "addressCountry": "RO"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "47.6611",
-        "longitude": "26.2910"
-      },
-      "telephone": "+40 770 357 800"
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": "KinTeto - Ițcani",
-      "image": "https://i.imgur.com/wgLf9sU.jpeg",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Suceava - Ițcani",
-        "addressRegion": "SV",
-        "addressCountry": "RO"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "47.6867",
-        "longitude": "26.2350"
-      },
-      "telephone": "+40 770 357 800"
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": "KinTeto - Bosanci",
-      "image": "https://i.imgur.com/wgLf9sU.jpeg",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Bosanci, Suceava",
-        "addressRegion": "SV",
-        "addressCountry": "RO"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "47.5833",
-        "longitude": "26.3000"
-      },
-      "telephone": "+40 770 357 800"
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": "KinTeto - Ipotești",
-      "image": "https://i.imgur.com/wgLf9sU.jpeg",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Ipotești, Suceava",
-        "addressRegion": "SV",
-        "addressCountry": "RO"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "47.6167",
-        "longitude": "26.2833"
-      },
-      "telephone": "+40 770 357 800"
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": "KinTeto - Tisăuți",
-      "image": "https://i.imgur.com/wgLf9sU.jpeg",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Tisăuți, Suceava",
-        "addressRegion": "SV",
-        "addressCountry": "RO"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "47.7333",
-        "longitude": "26.1667"
-      },
-      "telephone": "+40 770 357 800"
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": "KinTeto - Ilfov",
-      "image": "https://i.imgur.com/wgLf9sU.jpeg",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Ilfov",
-        "addressRegion": "IF",
-        "addressCountry": "RO"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "44.5050",
-        "longitude": "26.0870"
-      },
-      "telephone": "+40 770 357 800"
     }
-  ]
-}
-</script>
+    </script>
+    
+    <style>
+        /* ===== VARIABLES & RESET ===== */
+        :root {
+            --primary: #FFD700;
+            --primary-dark: #E6C200;
+            --secondary: #1a1a1a;
+            --accent: #ff6b00;
+            --text-light: #f8f9fa;
+            --text-gray: #adb5bd;
+            --bg-dark: #0a0a0a;
+            --bg-card: rgba(15, 15, 15, 0.85);
+            --shadow: 0 4px 20px rgba(255, 215, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* ===== TYPOGRAPHY ===== */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .lead {
+            font-size: 1.25rem;
+            font-weight: 300;
+        }
+        
+        /* ===== LAYOUT ===== */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        section {
+            padding: 5rem 0;
+        }
+        
+        /* ===== HEADER & NAVIGATION ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-light);
+        }
+        
+        .logo-img {
+            height: 50px;
+            width: auto;
+            border-radius: 8px;
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary);
+            color: var(--secondary);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid var(--primary);
+        }
+        
+        .cta-button:hover {
+            background: transparent;
+            color: var(--primary);
+        }
+        
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.9)), 
+                        url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            color: var(--text-light);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: var(--secondary);
+        }
+        
+        /* ===== SECTIONS ===== */
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--primary);
+            margin: 1rem auto;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            transition: var(--transition);
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* ===== SERVICES SECTION ===== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* ===== ABOUT SECTION ===== */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-image {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* ===== CONTACT SECTION ===== */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            min-width: 30px;
+        }
+        
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+        }
+        
+        .form-input, .form-textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--secondary);
+            padding: 3rem 0 1.5rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .footer-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-link:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .social-link:hover {
+            background: var(--primary);
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        /* ===== SNOW EFFECT ===== */
+        #snow-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.25rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .about-content, .contact-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: var(--bg-dark);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding: 2rem 0;
+                transition: var(--transition);
+                border-top: 1px solid rgba(255, 215, 0, 0.1);
+            }
+            
+            .nav-menu.active {
+                left: 0;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            section {
+                padding: 3rem 0;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
 <body>
-
-<!-- Canvas pentru ninsoare -->
-<canvas id="snow-canvas"></canvas>
-
-<!-- Logo -->
-<img src="https://i.imgur.com/wgLf9sU.jpeg" alt="Logo KinTeto" class="logo">
-
-<!-- Navbar -->
-<nav class="navbar">
-  <ul>
-    <li><a href="https://kintetosv.github.io/">Pagina Principală</a></li>
-    <li><a href="https://ro.wikipedia.org/wiki/Kinetoterapie" target="_blank">Despre Kinetoterapie</a></li>
-    <li><a href="https://www.facebook.com/profile.php?id=61578899477914" target="_blank">Contact</a></li>
-    <li><a href="https://kintetosv.github.io/demo.html" target="_blank">Asistent Virtual</a></li>
-    <li><a href="https://kintetosv.github.io/servicii.html" target="_blank">Relaxare</a></li>
-    <li><a href="https://kintetosv.github.io/12346/" target="_blank">Antrenament Saptamanal</a></li>
-   <li><a href="https://kintetosv.github.io/serviciioferite.html" target="_blank"> Servicii Oferite<a/></li>
-  </ul>
-</nav>
-
-<!-- Pagina Principală -->
-<section id="pagina-principala">
-  <h1 class="ascii-title">
- ____  __.__     ___________     __          
-|    |/ _|__| ___\__    ___/____/  |_  ____  
-|      < |  |/    \|    |_/ __ \   __\/  _ \ 
-|    |  \|  |   |  \    |\  ___/|  | (  <_> )
-|____|__ \__|___|  /____| \___  >__|  \____/ 
-        \/       \/           \/             
-  </h1>
-  <p>KinTeto oferă servicii profesionale de kinetoterapie la domiciliu, combinând experiența umană cu tehnologia modernă pentru a vă ajuta să vă recuperați confortabil și eficient.</p>
- <p>Ședințele de recuperare medicală sunt adaptate nevoilor fiecărui pacient, în funcție de nivelul său de mobilitate, de capacitatea de efort și de obiectivele de recuperare. Fiecare program terapeutic este personalizat pentru a asigura progres treptat, siguranță și rezultate durabile.</p>
-  <p>Număr de contact și programări: 0770 357 800 - Muntean Emanuel - Kinetoterapeut</p>
-  <p>Ne desfășurăm activitatea pe raza orașului Suceava și a comunelor limitrofe.</p>
-  <div class="external-content" id="content-pagina-principala"></div>
-</section>
-
-<!-- Despre Kinetoterapie -->
-<section id="despre-kinetoterapie">
-  <h2 class="ascii-title">DESPRE KINETOTERAPIE</h2>
-  <p>Kinetoterapia este ramura medicinei care se ocupă cu prevenirea, recuperarea și reabilitarea funcțională a organismului prin metode terapeutice specifice, precum exercițiile fizice personalizate și tratamentele adaptate fiecărui pacient, având ca scop îmbunătățirea mobilității și ameliorarea durerilor.</p>
-  <div class="external-content" id="content-despre-kinetoterapie"></div>
-</section>
-
-<!-- Servicii și Tarife -->
-<section id="servicii-tarife">
-  <h2 class="ascii-title">SERVICII ȘI TARIFE</h2>
-  <p>Oferim o gamă completă de servicii de kinetoterapie adaptate nevoilor fiecărui pacient, cu tarife transparente și competitive. Prețul final se stabilește în momentul programării și poate varia în funcție de mai mulți factori.</p>
-  <p>Tarifele noastre pot varia între 60 și 120 de lei pe oră, în funcție de complexitatea serviciului, materialele utilizate și costurile de transport, oferind o experiență personalizată și de calitate – fie că este vorba de masaj de relaxare, tratament spa sau terapie de recuperare.</p>
-  <div class="external-content" id="content-servicii-tarife"></div>
-</section>
-
-<!-- Asistent Virtual -->
-<section id="asistent-virtual">
-  <h2 class="ascii-title">ASISTENT VIRTUAL</h2>
-  <p>Asistentul nostru virtual AI oferă suport personalizat pentru antrenamente, monitorizând poziția corpului și corectând mișcările în timp real. Aplicația urmărește progresul tău pe măsură ce te antrenezi și oferă feedback adaptat nevoilor tale. Versiunea publică disponibilă este un demo, care îți permite să experimentezi funcționalitățile principale.</p>
-  <div class="external-content" id="content-asistent-virtual"></div>
-</section>
-
-<!-- Script pentru ninsoare -->
-<script>
-const canvas = document.getElementById('snow-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const numFlakes = 400;
-const flakes = [];
-
-for (let i = 0; i < numFlakes; i++) {
-  flakes.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    radius: Math.random() * 5 + 2,
-    speed: Math.random() * 2 + 1,
-    angle: Math.random() * Math.PI * 2,
-    spin: Math.random() * 0.05,
-    color: Math.random() > 0.5 ? '#FFFFFF' : '#FFD700'
-  });
-}
-
-function drawSnow() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let flake of flakes) {
-    ctx.beginPath();
-    ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
-    const gradient = ctx.createRadialGradient(flake.x, flake.y, 0, flake.x, flake.y, flake.radius);
-    gradient.addColorStop(0, flake.color);
-    gradient.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = gradient;
-    ctx.fill();
-    ctx.closePath();
-
-    flake.y += flake.speed;
-    flake.x += Math.sin(flake.angle) * 1;
-    flake.angle += flake.spin;
-
-    if (flake.y > canvas.height) flake.y = -flake.radius;
-    if (flake.x > canvas.width) flake.x = 0;
-    if (flake.x < 0) flake.x = canvas.width;
-  }
-  requestAnimationFrame(drawSnow);
-}
-drawSnow();
-
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
-</script>
-<script>
-function scaleSiteForMobile() {
-  const viewportWidth = window.innerWidth;
-  const html = document.documentElement;
-
-  let scale = 1; // scala implicită
-
-  // ajustează în funcție de lățimea ecranului
-  if(viewportWidth < 360) {
-    scale = 1.2; // telefoane foarte mici
-  } else if(viewportWidth >= 360 && viewportWidth < 480) {
-    scale = 1.15; // telefoane mici
-  } else if(viewportWidth >= 480 && viewportWidth < 768) {
-    scale = 1.1; // telefoane medii / tablete mici
-  } else {
-    scale = 1; // tablete mari și desktop
-  }
-
-  // aplică scale prin transform CSS
-  html.style.transformOrigin = "top left";
-  html.style.transform = `scale(${scale})`;
-  html.style.width = `${100/scale}%`; // păstrează layout-ul corect
-}
-
-// rulează la încărcare
-scaleSiteForMobile();
-
-// rulează și la redimensionare
-window.addEventListener("resize", scaleSiteForMobile);
-</script>
+    <!-- Snow Effect -->
+    <canvas id="snow-canvas"></canvas>
+    
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <img src="https://i.imgur.com/wgLf9sU.jpeg" alt="KinTeto Logo" class="logo-img">
+                <span class="logo-text">KinTeto</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home" class="nav-link active">Acasă</a></li>
+                    <li><a href="#services" class="nav-link">Servicii</a></li>
+                    <li><a href="#about" class="nav-link">Despre</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                    <li><a href="https://kintetosv.github.io/demo.html" class="nav-link" target="_blank">Asistent Virtual</a></li>
+                    <li><a href="https://www.facebook.com/profile.php?id=61578899477914" class="cta-button" target="_blank">Programează-te</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <h1 class="hero-title">Kinetoterapie la Domiciliu</h1>
+            <p class="hero-subtitle">Recuperare medicală personalizată în confortul casei dumneavoastră</p>
+            <p>Oferim servicii profesionale de kinetoterapie în Suceava și împrejurimi, adaptate nevoilor individuale ale fiecărui pacient.</p>
+            <div class="hero-buttons">
+                <a href="#contact" class="cta-button">Contactează-ne</a>
+                <a href="#services" class="cta-button btn-secondary">Serviciile noastre</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services">
+        <div class="container">
+            <h2 class="section-title">Serviciile Noastre</h2>
+            <div class="services-grid">
+                <div class="card">
+                    <div class="card-icon">💆‍♂️</div>
+                    <h3 class="card-title">Kinetoterapie la Domiciliu</h3>
+                    <p>Programe personalizate de recuperare medicală în confortul casei dumneavoastră, pentru adulți și copii.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🔄</div>
+                    <h3 class="card-title">Recuperare Medicală</h3>
+                    <p>Tratamente specializate pentru recuperarea după accidentări, intervenții chirurgicale sau afecțiuni cronice.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🧘‍♀️</div>
+                    <h3 class="card-title">Masaj Terapeutic</h3>
+                    <p>Tehnici de masaj adaptate nevoilor individuale, pentru ameliorarea durerilor și îmbunătățirea mobilității.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🤖</div>
+                    <h3 class="card-title">Asistență Tehnologică</h3>
+                    <p>Monitorizare și corecție a mișcărilor cu ajutorul tehnologiei moderne pentru rezultate optime.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">Despre Kinetoterapie</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="lead">Kinetoterapia este ramura medicinei care se ocupă cu prevenirea, recuperarea și reabilitarea funcțională a organismului.</p>
+                    <p>Prin metode terapeutice specifice și exerciții fizice personalizate, kinetoterapia vizează îmbunătățirea mobilității, ameliorarea durerilor și refacerea funcțiilor motorii afectate.</p>
+                    <p>La KinTeto, fiecare program terapeutic este adaptat nevoilor individuale ale pacientului, ținând cont de nivelul său de mobilitate, capacitatea de efort și obiectivele de recuperare.</p>
+                    <p>Ne deplasăm la domiciliul pacienților din Suceava și zonele limitrofe, oferind servicii complete de kinetoterapie pentru o recuperare eficientă și confortabilă.</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Kinetoterapie la domiciliu">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title">Programează o Ședință</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Date de Contact</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div>
+                            <h4>Telefon</h4>
+                            <p>0770 357 800</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <h4>Zona de Acoperire</h4>
+                            <p>Suceava și zonele limitrofe: Burdujeni, Ițcani, Bosanci, Ipotești, Tisăuți</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">⏰</div>
+                        <div>
+                            <h4>Program</h4>
+                            <p>Luni - Duminică: 8:00 - 20:00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">👨‍⚕️</div>
+                        <div>
+                            <h4>Kinetoterapeut</h4>
+                            <p>Muntean Emanuel</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nume complet</label>
+                        <input type="text" id="name" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Telefon</label>
+                        <input type="tel" id="phone" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location" class="form-label">Localitate</label>
+                        <input type="text" id="location" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">Mesaj (opțional)</label>
+                        <textarea id="message" class="form-textarea" placeholder="Descrieți pe scurt problema sau necesitatea..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="cta-button">Trimite cererea</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="footer-logo">KinTeto</div>
+                    <p>Servicii profesionale de kinetoterapie la domiciliu în Suceava și împrejurimi.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61578899477914" class="social-link" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Link-uri rapide</h4>
+                    <div class="footer-links">
+                        <a href="#home" class="footer-link">Acasă</a>
+                        <a href="#services" class="footer-link">Servicii</a>
+                        <a href="#about" class="footer-link">Despre</a>
+                        <a href="#contact" class="footer-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Servicii</h4>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Kinetoterapie la domiciliu</a>
+                        <a href="#" class="footer-link">Recuperare medicală</a>
+                        <a href="#" class="footer-link">Masaj terapeutic</a>
+                        <a href="https://kintetosv.github.io/demo.html" class="footer-link" target="_blank">Asistent virtual</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 KinTeto - Muntean Emanuel. Toate drepturile rezervate.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script>
+        // Mobile Navigation Toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+        
+        // Contact Form Submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const location = document.getElementById('location').value;
+            const message = document.getElementById('message').value;
+            
+            // In a real implementation, you would send this data to a server
+            // For now, we'll just show an alert
+            alert(`Mulțumim, ${name}! Cererea dvs. a fost înregistrată. Vă vom contacta în cel mai scurt timp la numărul ${phone}.`);
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // Snow Effect
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        const numFlakes = 150;
+        const flakes = [];
+        
+        for (let i = 0; i < numFlakes; i++) {
+            flakes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 3 + 1,
+                speed: Math.random() * 1 + 0.5,
+                angle: Math.random() * Math.PI * 2,
+                spin: Math.random() * 0.05,
+                color: Math.random() > 0.5 ? '#FFFFFF' : '#FFD700'
+            });
+        }
+        
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let flake of flakes) {
+                ctx.beginPath();
+                ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                
+                const gradient = ctx.createRadialGradient(
+                    flake.x, flake.y, 0, 
+                    flake.x, flake.y, flake.radius
+                );
+                
+                gradient.addColorStop(0, flake.color);
+                gradient.addColorStop(1, 'rgba(255,255,255,0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                ctx.closePath();
+                
+                // Update position
+                flake.y += flake.speed;
+                flake.x += Math.sin(flake.angle) * 0.5;
+                flake.angle += flake.spin;
+                
+                // Reset if out of bounds
+                if (flake.y > canvas.height) {
+                    flake.y = -flake.radius;
+                    flake.x = Math.random() * canvas.width;
+                }
+                
+                if (flake.x > canvas.width) flake.x = 0;
+                if (flake.x < 0) flake.x = canvas.width;
+            }
+            
+            requestAnimationFrame(drawSnow);
+        }
+        
+        drawSnow();
+        
+        // Add Font Awesome icons (would normally be loaded via CDN)
+        // For demo purposes, we're using emojis instead
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N16X1TBVEL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-N16X1TBVEL');
+    </script>
 </body>
 </html>
