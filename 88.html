@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ping Pong Online Multiplayer</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -202,6 +203,7 @@
             font-size: 1.2rem;
             cursor: pointer;
             min-width: 80px;
+            touch-action: manipulation;
         }
 
         .mobile-btn:active {
@@ -282,6 +284,29 @@
             display: inline-block;
         }
 
+        #qrCode {
+            width: 200px;
+            height: 200px;
+        }
+
+        .share-link {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .share-link input {
+            background: transparent;
+            border: 1px solid #FFD700;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+
         footer {
             margin-top: 30px;
             color: #aaa;
@@ -307,6 +332,10 @@
             .mobile-controls {
                 display: flex;
             }
+            
+            .share-link input {
+                width: 250px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -326,6 +355,11 @@
             
             .lobby-screen {
                 padding: 20px;
+            }
+            
+            .share-link input {
+                width: 200px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -361,12 +395,18 @@
                 </div>
 
                 <div class="qr-container">
-                    <canvas id="qrCode"></canvas>
+                    <div id="qrCode"></div>
                 </div>
                 <p>Scanează codul QR pentru a te conecta de pe telefon</p>
 
+                <div class="share-link">
+                    <p>Sau copiază linkul:</p>
+                    <input type="text" id="gameLink" readonly>
+                    <button onclick="copyLink()" class="btn" style="margin-top: 10px;">Copiază Link</button>
+                </div>
+
                 <div>
-                    <button id="readyBtn" class="btn btn-ready">SUNT GATA</button>
+                    <button id="readyBtn" class="btn btn-ready" disabled>SUNT GATA</button>
                     <button id="leaveBtn" class="btn btn-leave">PĂRĂSEȘTE</button>
                 </div>
             </div>
@@ -413,7 +453,7 @@
                 <li><strong>Telefon:</strong> Apasă butoanele SUS/JOS pentru a mișca paleta</li>
                 <li>Primul jucător care ajunge la 5 puncte câștigă</li>
                 <li>Mingea accelerează după fiecare lovitură</li>
-                <li>Scanează codul QR pentru a te conecta cu telefonul</li>
+                <li>Scanează codul QR sau copiază linkul pentru a te conecta cu telefonul</li>
             </ul>
         </div>
 
@@ -428,7 +468,11 @@
             constructor() {
                 this.players = {};
                 this.gameState = null;
-                this.connections = [];
+                this.roomId = this.generateRoomId();
+            }
+
+            generateRoomId() {
+                return Math.random().toString(36).substring(2, 8).toUpperCase();
             }
 
             connect(playerId, playerData) {
@@ -436,10 +480,18 @@
                     ...playerData,
                     ready: false,
                     score: 0,
-                    connected: true
+                    connected: true,
+                    paddleY: 160
                 };
                 this.broadcastPlayerList();
                 return true;
+            }
+
+            disconnect(playerId) {
+                if (this.players[playerId]) {
+                    this.players[playerId].connected = false;
+                    this.broadcastPlayerList();
+                }
             }
 
             setReady(playerId) {
@@ -448,7 +500,7 @@
                     this.broadcastPlayerList();
                     
                     // Start game if both players are ready
-                    const readyPlayers = Object.values(this.players).filter(p => p.ready);
+                    const readyPlayers = Object.values(this.players).filter(p => p.ready && p.connected);
                     if (readyPlayers.length === 2) {
                         this.startGame();
                     }
@@ -468,9 +520,8 @@
                     ballY: 200,
                     ballSpeedX: 5,
                     ballSpeedY: 3,
-                    paddle1Y: 160,
-                    paddle2Y: 160,
-                    scores: [0, 0]
+                    scores: [0, 0],
+                    lastUpdate: Date.now()
                 };
                 
                 if (typeof window.startGame === 'function') {
@@ -478,22 +529,100 @@
                 }
             }
 
-            updateGameState(playerId, action) {
+            updatePaddlePosition(playerId, y) {
+                if (this.players[playerId]) {
+                    this.players[playerId].paddleY = Math.max(0, Math.min(320, y));
+                }
+            }
+
+            updateGame() {
                 if (!this.gameState) return;
 
-                // Update paddle positions based on player actions
-                if (action.type === 'move') {
-                    if (playerId === 'player1') {
-                        this.gameState.paddle1Y = Math.max(0, Math.min(320, action.y));
-                    } else if (playerId === 'player2') {
-                        this.gameState.paddle2Y = Math.max(0, Math.min(320, action.y));
-                    }
+                const now = Date.now();
+                const deltaTime = (now - this.gameState.lastUpdate) / 16;
+                this.gameState.lastUpdate = now;
+
+                // Update ball position
+                this.gameState.ballX += this.gameState.ballSpeedX * deltaTime;
+                this.gameState.ballY += this.gameState.ballSpeedY * deltaTime;
+
+                // Ball collision with top and bottom
+                if (this.gameState.ballY <= 0 || this.gameState.ballY >= 400) {
+                    this.gameState.ballSpeedY = -this.gameState.ballSpeedY;
+                }
+
+                // Ball collision with paddles
+                const player1 = this.players['player1'];
+                const player2 = this.players['player2'];
+
+                if (player1 && this.gameState.ballX <= 20 && 
+                    this.gameState.ballY >= player1.paddleY && 
+                    this.gameState.ballY <= player1.paddleY + 80) {
+                    this.gameState.ballSpeedX = Math.abs(this.gameState.ballSpeedX) * 1.1;
+                    const hitPos = (this.gameState.ballY - player1.paddleY) / 80;
+                    this.gameState.ballSpeedY = (hitPos - 0.5) * 8;
+                }
+
+                if (player2 && this.gameState.ballX >= 780 && 
+                    this.gameState.ballY >= player2.paddleY && 
+                    this.gameState.ballY <= player2.paddleY + 80) {
+                    this.gameState.ballSpeedX = -Math.abs(this.gameState.ballSpeedX) * 1.1;
+                    const hitPos = (this.gameState.ballY - player2.paddleY) / 80;
+                    this.gameState.ballSpeedY = (hitPos - 0.5) * 8;
+                }
+
+                // Score points
+                if (this.gameState.ballX < 0) {
+                    this.gameState.scores[1]++;
+                    this.resetBall();
+                } else if (this.gameState.ballX > 800) {
+                    this.gameState.scores[0]++;
+                    this.resetBall();
+                }
+
+                // Check for winner
+                if (this.gameState.scores[0] >= 5 || this.gameState.scores[1] >= 5) {
+                    this.endGame();
                 }
 
                 // Broadcast updated game state
                 if (typeof window.updateGameState === 'function') {
-                    window.updateGameState(this.gameState);
+                    window.updateGameState(this.getGameState());
                 }
+            }
+
+            resetBall() {
+                this.gameState.ballX = 400;
+                this.gameState.ballY = 200;
+                this.gameState.ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * 5;
+                this.gameState.ballSpeedY = (Math.random() * 4) - 2;
+            }
+
+            endGame() {
+                const winner = this.gameState.scores[0] >= 5 ? 'player1' : 'player2';
+                if (typeof window.endGame === 'function') {
+                    window.endGame(winner);
+                }
+                this.gameState = null;
+                
+                // Reset player ready status
+                Object.values(this.players).forEach(player => {
+                    player.ready = false;
+                });
+                this.broadcastPlayerList();
+            }
+
+            getGameState() {
+                const player1 = this.players['player1'];
+                const player2 = this.players['player2'];
+                
+                return {
+                    ballX: this.gameState?.ballX || 400,
+                    ballY: this.gameState?.ballY || 200,
+                    paddle1Y: player1?.paddleY || 160,
+                    paddle2Y: player2?.paddleY || 160,
+                    scores: this.gameState?.scores || [0, 0]
+                };
             }
         }
 
@@ -526,6 +655,7 @@
                 this.setupEventListeners();
                 this.connectToServer();
                 this.generateQRCode();
+                this.updateGameLink();
                 this.drawLobby();
             }
 
@@ -541,15 +671,32 @@
                 document.addEventListener('keyup', (e) => this.handleKeyUp(e));
 
                 // Mobile controls
-                document.getElementById('upBtn').addEventListener('touchstart', () => this.mobileMove(-1));
-                document.getElementById('upBtn').addEventListener('touchend', () => this.mobileMove(0));
-                document.getElementById('downBtn').addEventListener('touchstart', () => this.mobileMove(1));
-                document.getElementById('downBtn').addEventListener('touchend', () => this.mobileMove(0));
+                const upBtn = document.getElementById('upBtn');
+                const downBtn = document.getElementById('downBtn');
+                
+                upBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.mobileMove(-1);
+                });
+                upBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.mobileMove(0);
+                });
+                
+                downBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.mobileMove(1);
+                });
+                downBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.mobileMove(0);
+                });
 
                 // Expose functions to global scope for server communication
                 window.updatePlayerList = (players) => this.updatePlayerList(players);
                 window.startGame = () => this.startGame();
                 window.updateGameState = (gameState) => this.updateGameState(gameState);
+                window.endGame = (winner) => this.endGame(winner);
             }
 
             connectToServer() {
@@ -582,6 +729,11 @@
                 this.gamePaused = false;
                 if (this.animationId) {
                     cancelAnimationFrame(this.animationId);
+                }
+                
+                // Disconnect from server
+                if (this.playerId) {
+                    this.server.disconnect(this.playerId);
                 }
                 
                 // Show lobby
@@ -652,33 +804,26 @@
             }
 
             sendMoveAction(direction) {
-                if (this.playerId && this.server.gameState) {
+                if (this.playerId) {
                     const speed = 8;
-                    let newY;
-
-                    if (this.playerId === 'player1') {
-                        newY = this.server.gameState.paddle1Y + (direction * speed);
-                        newY = Math.max(0, Math.min(320, newY));
-                    } else {
-                        newY = this.server.gameState.paddle2Y + (direction * speed);
-                        newY = Math.max(0, Math.min(320, newY));
-                    }
-
-                    this.server.updateGameState(this.playerId, {
-                        type: 'move',
-                        y: newY
-                    });
+                    const currentY = this.server.players[this.playerId]?.paddleY || 160;
+                    const newY = currentY + (direction * speed);
+                    
+                    this.server.updatePaddlePosition(this.playerId, newY);
                 }
             }
 
             updateGameState(gameState) {
-                this.server.gameState = gameState;
+                // Store the latest game state from server
+                this.currentGameState = gameState;
             }
 
             gameLoop() {
                 if (this.gamePaused) return;
 
-                this.update();
+                // Update server game state
+                this.server.updateGame();
+                
                 this.draw();
                 
                 if (this.gameRunning) {
@@ -686,15 +831,8 @@
                 }
             }
 
-            update() {
-                // Game logic is handled by the server simulation
-                // This is where we would normally update positions, check collisions, etc.
-            }
-
             draw() {
-                const gameState = this.server.gameState;
-                if (!gameState) return;
-
+                const gameState = this.currentGameState || this.server.getGameState();
                 const ctx = this.ctx;
                 const canvas = this.canvas;
 
@@ -762,6 +900,11 @@
                         if (player.ready) {
                             card.classList.add('ready');
                         }
+                    } else {
+                        card.classList.add('waiting');
+                        card.classList.remove('ready');
+                        status.textContent = 'Deconectat';
+                        device.textContent = '-';
                     }
                 });
             }
@@ -780,36 +923,44 @@
             }
 
             generateQRCode() {
-                const canvas = document.getElementById('qrCode');
-                const ctx = canvas.getContext('2d');
+                const gameUrl = window.location.href;
+                const qrContainer = document.getElementById('qrCode');
                 
-                // Simple QR code simulation
-                canvas.width = 200;
-                canvas.height = 200;
-                
-                // Draw a simple pattern that looks like a QR code
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, 200, 200);
-                
-                ctx.fillStyle = 'black';
-                // Draw corner markers
-                ctx.fillRect(10, 10, 50, 50);
-                ctx.fillRect(140, 10, 50, 50);
-                ctx.fillRect(10, 140, 50, 50);
-                
-                // Draw some random blocks to simulate QR code
-                for (let i = 0; i < 100; i++) {
-                    const x = Math.floor(Math.random() * 160) + 20;
-                    const y = Math.floor(Math.random() * 160) + 20;
-                    const size = Math.random() > 0.7 ? 10 : 5;
-                    ctx.fillRect(x, y, size, size);
-                }
-                
-                ctx.fillStyle = 'black';
-                ctx.font = '12px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Scan me!', 100, 190);
+                QRCode.toCanvas(qrContainer, gameUrl, {
+                    width: 200,
+                    height: 200,
+                    margin: 1,
+                    color: {
+                        dark: '#000000',
+                        light: '#FFFFFF'
+                    }
+                }, function(error) {
+                    if (error) {
+                        console.error('Error generating QR code:', error);
+                        qrContainer.innerHTML = '<p>Error generating QR code</p>';
+                    }
+                });
             }
+
+            updateGameLink() {
+                const gameLink = document.getElementById('gameLink');
+                gameLink.value = window.location.href;
+            }
+
+            endGame(winner) {
+                const winnerName = winner === 'player1' ? 'Jucătorul 1' : 'Jucătorul 2';
+                alert(`🎉 ${winnerName} a câștigat jocul!`);
+                this.backToLobby();
+            }
+        }
+
+        // Global function for copying link
+        function copyLink() {
+            const gameLink = document.getElementById('gameLink');
+            gameLink.select();
+            gameLink.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            alert('Link copiat în clipboard!');
         }
 
         // Initialize the game when page loads
