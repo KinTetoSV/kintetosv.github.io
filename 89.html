@@ -85,7 +85,7 @@
             align-items: center;
             padding: 15px 0;
             border-bottom: 2px solid #FFD700;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .game-title {
@@ -104,7 +104,7 @@
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            margin: 10px 0 20px 0;
+            margin: 10px 0 15px 0;
             overflow: hidden;
         }
 
@@ -120,7 +120,7 @@
             border: 2px solid #FFD700;
             border-radius: 15px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             flex-grow: 1;
         }
 
@@ -129,7 +129,7 @@
             font-weight: 600;
             color: #FFD700;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             line-height: 1.4;
         }
 
@@ -143,7 +143,7 @@
             background: rgba(255, 255, 255, 0.08);
             border: 2px solid #2a4365;
             border-radius: 12px;
-            padding: 18px 15px;
+            padding: 16px 15px;
             color: white;
             font-size: 1.1rem;
             text-align: left;
@@ -161,7 +161,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         .lifeline-btn {
@@ -188,19 +188,24 @@
             transform: none;
         }
 
-        .money-list {
+        .money-container {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
-            padding: 15px;
-            max-height: 150px;
+            padding: 12px;
+            max-height: 120px;
             overflow-y: auto;
         }
 
+        .money-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
         .money-item {
-            padding: 8px 12px;
-            margin: 4px 0;
+            padding: 6px 10px;
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             text-align: center;
             transition: all 0.2s ease;
         }
@@ -209,7 +214,7 @@
             background: #FFD700;
             color: #1a202c;
             font-weight: 700;
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
         .money-reached {
@@ -231,10 +236,11 @@
         }
 
         .message-text {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 30px;
             line-height: 1.3;
+            padding: 0 10px;
         }
 
         .message-correct {
@@ -247,7 +253,7 @@
 
         .message-win {
             color: #FFD700;
-            font-size: 2.2rem;
+            font-size: 2rem;
         }
 
         /* Buttons */
@@ -255,9 +261,9 @@
             background: linear-gradient(135deg, #FFD700, #ecc94b);
             border: none;
             border-radius: 50px;
-            padding: 18px 40px;
+            padding: 16px 35px;
             color: #1a202c;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -310,7 +316,29 @@
                 font-size: 1rem;
             }
             
-            .money-list {
+            .money-container {
+                max-height: 80px;
+            }
+            
+            .money-item {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-height: 700px) {
+            .question-text {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+            
+            .answer-btn {
+                padding: 14px 15px;
+                font-size: 1rem;
+            }
+            
+            .money-container {
                 max-height: 100px;
             }
         }
@@ -348,7 +376,9 @@
                 <button id="lifelineChange" class="lifeline-btn">SCHIMBĂ</button>
             </div>
 
-            <div class="money-list" id="moneyContainer"></div>
+            <div class="money-container">
+                <div class="money-list" id="moneyContainer"></div>
+            </div>
         </div>
 
         <!-- Message Screen -->
@@ -359,7 +389,7 @@
     </div>
 
     <script>
-        // Întrebări și răspunsuri - 25 de întrebări cu răspunsuri corecte variate
+        // Întrebări și răspunsuri - 15 întrebări cu răspunsuri corecte variate
         const questions = [
             {
                 q: "Ce cauzează prezența combustibilului în uleiul de motor?",
@@ -435,67 +465,11 @@
                 q: "Ce cauzează un zgomot de 'bâzâit' la viraje în sistemul de direcție?",
                 a: ["Uzura rulmentului pompei de direcție", "Nivel scăzut de lichid de direcție", "Cureaua de direcție slăbită", "Arbore de direcție uzat"],
                 correct: 2
-            },
-            {
-                q: "Ce rol are senzorul de unghi al volanului în sistemul ESP?",
-                a: ["Detectează intenția șoferului de a vira", "Măsoară unghiul real al roților", "Controlează funcționarea servo-direcției", "Monitorizează viteza de rotație a volanului"],
-                correct: 3
-            },
-            {
-                q: "Ce cauzează un motor care 'traversează' la accelerare bruscă?",
-                a: ["Amestec prea sărac și aprindere tardivă", "Amestec prea bogat și bujii murdare", "Sistem EGR blocat deschis", "Senzor TPS defect"],
-                correct: 0
-            },
-            {
-                q: "Ce este un motor 'interferență'?",
-                a: ["Pistoanele pot intra în contact cu supapele dacă distribuția se decalează", "Necesită un sistem de răcire mai eficient", "Are un raport de compresie mai ridicat", "Utilizează un sistem de distribuție cu lanț"],
-                correct: 1
-            },
-            {
-                q: "Ce cauzează un motor care 'fumegă' alb la pornirea la rece?",
-                a: ["Condensare în camera de ardere și sistemul de eșapament", "Uzura segmentilor de compresie", "Problemă la sistemul de injecție", "Amestec prea bogat"],
-                correct: 2
-            },
-            {
-                q: "Ce rol are modulul de control al transmisiei (TCM) într-o cutie automată?",
-                a: ["Controlează schimbarea treptelor și cuplarea convertizorului", "Monitorizează temperatura uleiului din cutie", "Controlează funcționarea ambreiajelor", "Gestionează sistemul de frânare"],
-                correct: 3
-            },
-            {
-                q: "Ce diferențiază un sistem de frânare 'by-wire' de unul convențional?",
-                a: ["Nu există legătură mecanică directă între pedala și etrieri", "Utilizează un fluid de frânare diferit", "Are o presiune de frânare mai mare", "Este mai ușor de reparat"],
-                correct: 0
-            },
-            {
-                q: "Ce cauzează un motor care 'pierde turații' la accelerare bruscă?",
-                a: ["Problemă la sistemul de alimentare cu combustibil", "Ambreiaj patinat", "Senzor TPS defect", "Sistem de aprindere defect"],
-                correct: 1
-            },
-            {
-                q: "Ce efect are un convertizor de cuplu care nu se blochează corect?",
-                a: ["Creșterea consumului de combustibil", "Scăderea vitezei maxime", "Funcționare zgomotoasă a cutiei", "Schimbări bruște de trepte"],
-                correct: 2
-            },
-            {
-                q: "Ce cauzează un zgomot de 'bâtaie' care apare doar sub sarcină?",
-                a: ["Detonație (bătaie la motor)", "Uzura rulmenților arborelui cotit", "Problemă la sistemul de distribuție", "Arbore cu came uzat"],
-                correct: 3
-            },
-            {
-                q: "Ce indica un motor care emite fum negru la accelerare?",
-                a: ["Amestec prea bogat și ardere incompletă", "Uzura segmentilor și arderea uleiului", "Temperaturi scăzute de funcționare", "Problemă la sistemul de aprindere"],
-                correct: 0
             }
         ];
 
         // Sumele pentru fiecare întrebare
-        const moneyValues = [
-            100, 200, 300, 500, 1000,
-            2000, 4000, 8000, 16000, 32000,
-            64000, 125000, 250000, 500000, 1000000,
-            2000000, 3000000, 5000000, 7500000, 10000000,
-            15000000, 20000000, 30000000, 40000000, 50000000
-        ];
+        const moneyValues = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
 
         // Starea jocului
         let currentQuestion = 0;
@@ -585,15 +559,17 @@
                 currentMoney = moneyValues[currentQuestion];
                 currentQuestion++;
                 
-                if (currentMoney === 50000000) {
-                    showMessage("FELICITĂRI! Ai câștigat 50.000.000 RON și ai devenit MECANIC EXPERT!", "win");
+                if (currentMoney === 1000000) {
+                    showMessage("FELICITĂRI! Ai câștigat 1.000.000 RON și ai devenit MECANIC EXPERT!", "win");
                 } else if (currentQuestion >= questions.length) {
                     showMessage("Felicitări! Ai terminat toate întrebările și ai câștigat " + currentMoney.toLocaleString() + " RON!", "win");
                 } else {
                     showMessage("Răspuns corect!", "correct");
                 }
             } else {
-                showMessage("Răspuns greșit! Ai câștigat " + (currentQuestion > 0 ? moneyValues[currentQuestion-1].toLocaleString() : 0) + " RON.", "wrong");
+                // RESET la 0 când răspunsul este greșit
+                currentMoney = 0;
+                showMessage("Răspuns greșit! Jocul se restartează. Ai câștigat 0 RON.", "wrong");
             }
         }
 
@@ -749,10 +725,12 @@
         });
 
         continueBtn.addEventListener('click', function() {
-            if (currentMoney === 50000000 || currentQuestion >= questions.length) {
+            if (currentMoney === 0 || currentMoney === 1000000 || currentQuestion >= questions.length) {
+                // Dacă a greșit (currentMoney = 0) sau a câștigat, revenire la meniu
                 menuScreen.classList.remove('hidden');
                 messageScreen.classList.add('hidden');
             } else {
+                // Continuă la următoarea întrebare
                 messageScreen.classList.add('hidden');
                 gameScreen.classList.remove('hidden');
                 hiddenAnswers = [];
