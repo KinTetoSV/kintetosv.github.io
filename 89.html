@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vrei să fii mecanic?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1603712610494-49c47c6d7d8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 15px;
+        }
+
+        .game-screen {
+            background: rgba(20, 30, 48, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: none;
+            height: 90vh;
+            flex-direction: column;
+        }
+
+        .menu-screen {
+            background: rgba(20, 30, 48, 0.95);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .message-screen {
+            background: rgba(20, 30, 48, 0.95);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        h1 {
+            color: #ffcc00;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            color: #ffcc00;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #ffcc00, #ff9900);
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .question-container {
+            padding: 20px;
+            background: rgba(30, 40, 60, 0.9);
+            margin: 15px;
+            border-radius: 10px;
+            border: 2px solid #ffcc00;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffcc00;
+            text-align: center;
+        }
+
+        .answers-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        .answer-btn {
+            background: rgba(40, 50, 70, 0.9);
+            color: white;
+            border: 2px solid #4a6fa5;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .answer-btn:hover {
+            background: rgba(60, 80, 120, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .answer-btn:active {
+            transform: translateY(1px);
+        }
+
+        .lifelines-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: rgba(30, 40, 60, 0.9);
+            margin: 15px;
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+
+        .lifeline-btn {
+            background: linear-gradient(to right, #4a6fa5, #2e4a6e);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            flex: 1;
+            min-width: 70px;
+            max-width: 120px;
+        }
+
+        .lifeline-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .lifeline-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .money-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: rgba(30, 40, 60, 0.9);
+            margin: 15px;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .money-value {
+            font-size: 1.2rem;
+            padding: 8px;
+            width: 100%;
+            text-align: center;
+            margin: 3px 0;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .money-current {
+            background: linear-gradient(to right, #ffcc00, #ff9900);
+            color: #1a1a2e;
+            font-weight: bold;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+        }
+
+        .money-reached {
+            background: rgba(255, 204, 0, 0.3);
+            color: #ffcc00;
+        }
+
+        .money-upcoming {
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(20, 30, 48, 0.9);
+            border-bottom: 2px solid #ffcc00;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 5px;
+        }
+
+        .current-money {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        .message-text {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #ffcc00;
+        }
+
+        .correct {
+            color: #4CAF50;
+        }
+
+        .wrong {
+            color: #F44336;
+        }
+
+        .win {
+            color: #ffcc00;
+            font-size: 2.5rem;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #ffcc00;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        @media (min-width: 768px) {
+            .answers-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .btn {
+                width: auto;
+            }
+            
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .question-text {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Meniul principal -->
+        <div class="menu-screen" id="menuScreen">
+            <h1>Vrei să fii mecanic?</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 30px; color: #ccc;">
+                Răspunde corect la 50 de întrebări și câștigă 1.000.000 RON!
+            </p>
+            <button class="btn" id="startBtn">Start Joc</button>
+        </div>
+
+        <!-- Ecranul de joc -->
+        <div class="game-screen" id="gameScreen">
+            <div class="header">
+                <div class="logo">Vrei să fii mecanic?</div>
+                <div class="current-money">Câștig: <span id="currentMoney">0</span> RON</div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-text" id="questionText"></div>
+                <div class="answers-container" id="answersContainer"></div>
+            </div>
+
+            <div class="lifelines-container">
+                <button class="lifeline-btn" id="lifeline5050">50:50</button>
+                <button class="lifeline-btn" id="lifelineFriend">Prieten</button>
+                <button class="lifeline-btn" id="lifelineAudience">Public</button>
+                <button class="lifeline-btn" id="lifelineChange">Schimbă</button>
+            </div>
+
+            <div class="money-container" id="moneyContainer"></div>
+        </div>
+
+        <!-- Ecranul de mesaj -->
+        <div class="message-screen" id="messageScreen">
+            <div class="message-text" id="messageText"></div>
+            <button class="btn" id="continueBtn">Continuă</button>
+        </div>
+    </div>
+
+    <script>
+        // Întrebări și răspunsuri - 50 de întrebări complexe de mecanică
+        const questions = [
+            {
+                q: "Ce cauzează prezența combustibilului în uleiul de motor?",
+                a: ["Inel de compresie uzat", "Senzor de oxigen defect", "Termostat blocat deschis", "Filtru de aer împuținat"],
+                correct: 0
+            },
+            {
+                q: "Ce semnifică un zgomot de 'bătaie la piston' care dispare la încălzirea motorului?",
+                a: ["Joc excesiv între piston și cilindru", "Arbore cotit uzat", "Probleme la sistemul de răcire", "Supape reglate incorect"],
+                correct: 0
+            },
+            {
+                q: "Care este diferența principală între un sistem common-rail și un sistem de injecție convențional la motoarele diesel?",
+                a: ["Presiune constantă în rail și injecție controlată electronic", "Temperatura mai ridicată a combustibilului", "Utilizarea unui compresor în loc de turbină", "Absența pompei de injecție"],
+                correct: 0
+            },
+            {
+                q: "Ce consecințe are un EGR blocat în poziție deschisă?",
+                a: ["Funcționare instabilă la ralanti și pierdere de putere", "Consum crescut de combustibil", "Temperaturi ridicate de funcționare", "Emisii reduse de NOx"],
+                correct: 0
+            },
+            {
+                q: "Ce indică un motor care produce fum albastru la accelerare?",
+                a: ["Uzura segmentilor și arderea uleiului", "Temperaturi scăzute de funcționare", "Amestec prea bogat", "Probleme la sistemul de aprindere"],
+                correct: 0
+            },
+            {
+                q: "Care este rolul senzorului de detonație în managementul motorului?",
+                a: ["Detectează bataia la motor și retardează avansul", "Măsoară temperatura gazelor de eșapament", "Controlează funcționarea EGR-ului", "Monitorizează presiunea din turbocompresor"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un zgomot de 'tic-tac' ritmic care crește cu turația motorului?",
+                a: ["Joc excesiv la supape", "Uzura rulmenților arborelui cotit", "Probleme la distribuție", "Piston lovind chiulasa"],
+                correct: 0
+            },
+            {
+                q: "Ce efect are un catalizator împuținat asupra performanței motorului?",
+                a: ["Pierdere de putere și creșterea contrapresiunii", "Creșterea consumului de combustibil", "Scăderea temperaturii de funcționare", "Îmbunătățirea răspunsului la accelerare"],
+                correct: 0
+            },
+            {
+                q: "Ce diferențiază un sistem VVT-i de un sistem VVT-iE?",
+                a: ["VVT-iE este controlat electric, nu hidraulic", "VVT-iE funcționează la viteze mai mari", "VVT-iE nu necesită ulei sub presiune", "VVT-iE controlează doar supapele de admisie"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează prezența apei în uleiul de motor?",
+                a: ["Chiulasă fisurată sau garnitură de chiulasă defectă", "Condensare în carter din cauza scurtor deplasări", "Răcitor de ulei defect", "Sistem de ventilație carter blocat"],
+                correct: 0
+            },
+            {
+                q: "Ce indica un cod de eroare P0340?",
+                a: ["Problemă la circuitul senzorului de poziție ax cu came", "Eroare la senzorul de poziție arbore cotit", "Defect la senzorul de detonație", "Problemă la sistemul de injecție"],
+                correct: 0
+            },
+            {
+                q: "Care este rolul pompei de vid în sistemul de frânare?",
+                a: ["Creează vidul necesar pentru servofrână", "Asigură presiunea în sistemul de frânare", "Evacuă aerul din sistemul de frânare", "Controlează distribuția forței de frânare"],
+                correct: 0
+            },
+            {
+                q: "Ce efect are un senzor MAF defect asupra funcționării motorului?",
+                a: ["Amestec combustibil-aer incorect și funcționare instabilă", "Creșterea temperaturii de funcționare", "Scăderea presiunii în sistemul de injecție", "Defectarea catalizatorului"],
+                correct: 0
+            },
+            {
+                q: "Ce caracteristică diferențiază un motor Atkinson de un motor Otto convențional?",
+                a: ["Cursa de compresie mai lungă decât cursa de admisie", "Utilizarea unui compresor mecanic", "Absența sistemului de aprindere", "Raport de compresie variabil"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un zgomot de 'bâzâit' la viraje în sistemul de direcție?",
+                a: ["Uzura rulmentului pompei de direcție", "Nivel scăzut de lichid de direcție", "Cureaua de direcție slăbită", "Arbore de direcție uzat"],
+                correct: 0
+            },
+            {
+                q: "Ce indica un motor care 'traversează' la accelerare bruscă?",
+                a: ["Amestec prea sărac și aprindere tardivă", "Amestec prea bogat și bujii murdare", "Sistem EGR blocat deschis", "Senzor TPS defect"],
+                correct: 0
+            },
+            {
+                q: "Care este funcția unei pompe cu injecție în linie la motoarele diesel vechi?",
+                a: ["Generează presiunea necesară injecției și distribuie combustibilul", "Filtrează combustibilul înainte de injecție", "Răcește combustibilul înainte de injecție", "Amestecă combustibilul cu aerul"],
+                correct: 0
+            },
+            {
+                q: "Ce consecințe are un termostat blocat închis?",
+                a: ["Supraîncălzirea motorului", "Consum crescut de combustibil", "Funcționare instabilă la rece", "Emisii crescute de CO2"],
+                correct: 0
+            },
+            {
+                q: "Ce rol are senzorul de unghi al volanului în sistemul ESP?",
+                a: ["Detectează intenția șoferului de a vira", "Măsoară unghiul real al roților", "Controlează funcționarea servo-direcției", "Monitorizează viteza de rotație a volanului"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un zgomot de 'bâtaie la bielă' care este mai pronunțat la decelerare?",
+                a: ["Joc excesiv în fusul palier", "Uzura capului de bielă", "Probleme la piston", "Arbore cotit deforma"],
+                correct: 0
+            },
+            {
+                q: "Ce diferențiază un sistem de frânare cu discuri ventilate de unul cu discuri pline?",
+                a: ["Capacitatea superioară de disipare a căldurii", "Greutate mai redusă", "Cost de producție mai mic", "Durabilitate mai mare"],
+                correct: 0
+            },
+            {
+                q: "Ce efect are un filtru de particule diesel (DPF) complet înfundat?",
+                a: ["Pierdere severă de putere și posibilă oprire a motorului", "Creșterea consumului de combustibil", "Scăderea emisiilor de particule", "Îmbunătățirea răspunsului la accelerare"],
+                correct: 0
+            },
+            {
+                q: "Ce indica un cod de eroare P0420?",
+                a: ["Eficiență scăzută a catalizatorului", "Problemă la senzorul de oxigen", "Defect la sistemul de injecție", "Eroare la senzorul de temperatură"],
+                correct: 0
+            },
+            {
+                q: "Care este rolul supapelor de decompresie la motoarele diesel vechi?",
+                a: ["Ușurează pornirea motorului prin reducerea compresiei", "Crește compresia la pornire", "Controlează presiunea în sistemul de injecție", "Reglează temperatura de ardere"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un zgomot de 'scârțâit' la apăsarea ambreiajului?",
+                a: ["Uzura rulmentului de la arborele primar", "Uzura discului de ambreiaj", "Problemă la sistemul hidraulic", "Arborele ambreiajului uzat"],
+                correct: 0
+            },
+            {
+                q: "Ce efect are un senzor de knock retarded pe performanța motorului?",
+                a: ["Reducerea puterii și a cuplului motor", "Creșterea consumului de combustibil", "Îmbunătățirea răspunsului la accelerare", "Scăderea emisiilor de NOx"],
+                correct: 0
+            },
+            {
+                q: "Ce caracteristică definește un motor 'interferență'?",
+                a: ["Pistoanele pot intra în contact cu supapele dacă distribuția se decalează", "Necesită un sistem de răcire mai eficient", "Are un raport de compresie mai ridicat", "Utilizează un sistem de distribuție cu lanț"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un motor care 'fumegă' alb la pornirea la rece?",
+                a: ["Condensare în camera de ardere și sistemul de eșapament", "Uzura segmentilor de compresie", "Problemă la sistemul de injecție", "Amestec prea bogat"],
+                correct: 0
+            },
+            {
+                q: "Ce rol are modulul de control al transmisiei (TCM) într-o cutie automată?",
+                a: ["Controlează schimbarea treptelor și cuplarea convertizorului", "Monitorizează temperatura uleiului din cutie", "Controlează funcționarea ambreiajelor", "Gestionează sistemul de frânare"],
+                correct: 0
+            },
+            {
+                q: "Ce indica un zgomot de 'bâtaie' care apare doar la anumite turații?",
+                a: ["Rezonanță în sistemul de admisie sau eșapament", "Uzura generală a motorului", "Problemă la sistemul de distribuție", "Arbore cotit dezechilibrat"],
+                correct: 0
+            },
+            {
+                q: "Ce diferențiază un sistem de frânare 'by-wire' de unul convențional?",
+                a: ["Nu există legătură mecanică directă între pedala și etrieri", "Utilizează un fluid de frânare diferit", "Are o presiune de frânare mai mare", "Este mai ușor de reparat"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un motor care 'pierde turații' la accelerare bruscă?",
+                a: ["Problemă la sistemul de alimentare cu combustibil", "Ambreiaj patinat", "Senzor TPS defect", "Sistem de aprindere defect"],
+                correct: 0
+            },
+            {
+                q: "Ce efect are un convertizor de cuplu care nu se blochează corect?",
+                a: ["Creșterea consumului de combustibil", "Scăderea vitezei maxime", "Funcționare zgomotoasă a cutiei", "Schimbări bruște de trepte"],
+                correct: 0
+            },
+            {
+                q: "Ce rol are senzorul de unghi al manetei de accelerație în sistemele drive-by-wire?",
+                a: ["Detectează poziția pedalei de accelerație", "Controlează deschiderea clapetei de accelerație", "Măsoară forța aplicată pe pedală", "Monitorizează viteza de accelerație"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un zgomot de 'bâtaie' care apare doar sub sarcină?",
+                a: ["Detonație (bătaie la motor)", "Uzura rulmenților arborelui cotit", "Problemă la sistemul de distribuție", "Arbore cu came uzat"],
+                correct: 0
+            },
+            {
+                q: "Ce indica un motor care emite fum negru la accelerare?",
+                a: ["Amestec prea bogat și ardere incompletă", "Uzura segmentilor și arderea uleiului", "Temperaturi scăzute de funcționare", "Problemă la sistemul de aprindere"],
+                correct: 0
+            },
+            {
+                q: "Care este rolul supapei de siguranță din sistemul de răcire?",
+                a: ["Elimină excesul de presiune din sistem", "Reglează temperatura de funcționare", "Controlează circulația lichidului de răcire", "Previne formarea de bulle de aer"],
+                correct: 0
+            },
+            {
+                q: "Ce diferențiază un sistem de suspensie activă de unul convențional?",
+                a: ["Poate ajusta caracteristicile în timp real în funcție de condiții", "Utilizează arcuri și amortizoare diferite", "Este mai ușor și mai compact", "Costă mai puțin de produs"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un zgomot de 'trosnit' la viraje lente?",
+                a: ["Uzura jonturilor homocinetice", "Probleme la rulmenții roților", "Sistem de direcție uzat", "Arbore de transmisie dezechilibrat"],
+                correct: 0
+            },
+            {
+                q: "Ce efect are un sistem SCR (Selective Catalytic Reduction) defect?",
+                a: ["Emisii crescute de NOx și posibile limite de putere", "Creșterea consumului de AdBlue", "Scăderea temperaturii de funcționare", "Îmbunătățirea performanței motorului"],
+                correct: 0
+            },
+            {
+                q: "Ce rol are modulul de control al caroseriei (BCM) în vehiculele moderne?",
+                a: ["Gestionează sistemele electrice ale caroseriei", "Controlează funcționarea motorului", "Monitorizează sistemul de frânare", "Gestionează transmisia"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un motor care 'ține' turațiile la schimbarea treptelor?",
+                a: ["Senzor TPS defect sau cablul de accelerație blocat", "Problemă la sistemul de injecție", "Ambreiaj care nu se decuplează complet", "Sistem de aprindere defect"],
+                correct: 0
+            },
+            {
+                q: "Ce indica un cod de eroare P0301?",
+                a: ["Misfire în cilindrul 1", "Problemă la senzorul de oxigen din bancada 1", "Eroare la bujia cilindrului 1", "Senzor de detonație defect"],
+                correct: 0
+            },
+            {
+                q: "Care este rolul pompei de înaltă presiune într-un sistem common-rail?",
+                a: ["Generează presiunea foarte mare necesară injecției", "Filtrează combustibilul înainte de injecție", "Răcește combustibilul înainte de injecție", "Amestecă combustibilul cu AdBlue"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un zgomot de 'bâzâit' electric constant de sub capotă?",
+                a: ["Pompa de combustibil defectă", "Alternator cu rulmenți uzați", "Compresor de aer condiționat defect", "Ventilator de răcire blocat"],
+                correct: 0
+            },
+            {
+                q: "Ce efect are un senzor MAP defect pe un motor turbo?",
+                a: ["Presiune insuficientă de supraalimentare și pierdere de putere", "Creșterea excesivă a presiunii de supraalimentare", "Funcționare instabilă la ralanti", "Creșterea consumului de combustibil"],
+                correct: 0
+            },
+            {
+                q: "Ce diferențiază un sistem de direcție cu cremalieră de unul cu șurub melc?",
+                a: ["Răspuns mai direct și mai precis la viraje", "Fiabilitate superioară", "Cost de producție mai redus", "Utilizare exclusivă pe vehicule cu tracțiune față"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un motor care 'pierde' lichid de răcire fără să prezinte scurgeri vizibile?",
+                a: ["Chiulasă fisurată sau garnitură de chiulasă arsă", "Radiator fisurat intern", "Vas de expansiune crăpat", "Pompă de apă defectă"],
+                correct: 0
+            },
+            {
+                q: "Ce rol are senzorul de unghi al volanului în sistemul de parcare automată?",
+                a: ["Detectează manevrele șoferului pentru a calcula traiectoria", "Măsoară unghiul roților față de caroserie", "Controlează funcționarea servo-direcției", "Monitorizează viteza de rotație a volanului"],
+                correct: 0
+            },
+            {
+                q: "Ce indica un motor care produce un zgomot de 'bâtaie' doar la pornirea la rece?",
+                a: ["Uzura pistoanelor și a cilindrilor", "Joc excesiv în biele", "Probleme la sistemul de distribuție", "Arbore cotit dezechilibrat"],
+                correct: 0
+            }
+        ];
+
+        // Sumele pentru fiecare întrebare (progresive până la 1.000.000 RON)
+        const moneyValues = [
+            100, 200, 300, 500, 1000,
+            2000, 4000, 8000, 16000, 32000,
+            64000, 125000, 250000, 500000, 1000000,
+            2000000, 3000000, 5000000, 7500000, 10000000,
+            15000000, 20000000, 30000000, 40000000, 50000000,
+            60000000, 70000000, 80000000, 90000000, 100000000,
+            125000000, 150000000, 175000000, 200000000, 250000000,
+            300000000, 350000000, 400000000, 450000000, 500000000,
+            550000000, 600000000, 650000000, 700000000, 750000000,
+            800000000, 850000000, 900000000, 950000000, 1000000000
+        ];
+
+        // Starea jocului
+        let currentQuestion = 0;
+        let currentMoney = 0;
+        let hiddenAnswers = [];
+        let lifelines = {
+            "50:50": true,
+            "prieten": true,
+            "public": true,
+            "schimba": true
+        };
+
+        // Elemente DOM
+        const menuScreen = document.getElementById('menuScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const messageScreen = document.getElementById('messageScreen');
+        const startBtn = document.getElementById('startBtn');
+        const continueBtn = document.getElementById('continueBtn');
+        const questionText = document.getElementById('questionText');
+        const answersContainer = document.getElementById('answersContainer');
+        const moneyContainer = document.getElementById('moneyContainer');
+        const currentMoneyElement = document.getElementById('currentMoney');
+        const messageText = document.getElementById('messageText');
+        const progressBar = document.getElementById('progressBar');
+
+        // Ajutoare
+        const lifeline5050 = document.getElementById('lifeline5050');
+        const lifelineFriend = document.getElementById('lifelineFriend');
+        const lifelineAudience = document.getElementById('lifelineAudience');
+        const lifelineChange = document.getElementById('lifelineChange');
+
+        // Inițializare joc
+        function initGame() {
+            currentQuestion = 0;
+            currentMoney = 0;
+            hiddenAnswers = [];
+            lifelines = {
+                "50:50": true,
+                "prieten": true,
+                "public": true,
+                "schimba": true
+            };
+            
+            updateLifelines();
+            updateMoneyDisplay();
+            updateProgressBar();
+            showQuestion();
+        }
+
+        // Afișează întrebarea curentă
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            questionText.textContent = `${currentQuestion + 1}. ${question.q}`;
+            
+            // Actualizează afișajul banilor
+            updateMoneyDisplay();
+            updateProgressBar();
+            
+            // Generează butoanele pentru răspunsuri
+            answersContainer.innerHTML = '';
+            question.a.forEach((answer, index) => {
+                if (hiddenAnswers.includes(index)) return;
+                
+                const button = document.createElement('button');
+                button.className = 'answer-btn';
+                button.textContent = `${String.fromCharCode(65 + index)}. ${answer}`;
+                button.onclick = () => checkAnswer(index);
+                answersContainer.appendChild(button);
+            });
+        }
+
+        // Verifică răspunsul
+        function checkAnswer(answerIndex) {
+            const question = questions[currentQuestion];
+            const isCorrect = answerIndex === question.correct;
+            
+            if (isCorrect) {
+                currentMoney = moneyValues[currentQuestion];
+                currentQuestion++;
+                
+                if (currentMoney === 1000000000) {
+                    showMessage("FELICITĂRI! Ai câștigat 1.000.000.000 RON și ai devenit MECANIC EXPERT!", "win");
+                } else if (currentQuestion >= questions.length) {
+                    showMessage("Felicitări! Ai terminat toate întrebările și ai câștigat " + currentMoney.toLocaleString() + " RON!", "win");
+                } else {
+                    showMessage("Răspuns corect!", "correct");
+                }
+            } else {
+                showMessage("Răspuns greșit! Ai câștigat " + (currentQuestion > 0 ? moneyValues[currentQuestion-1].toLocaleString() : 0) + " RON.", "wrong");
+            }
+        }
+
+        // Afișează mesaj
+        function showMessage(text, type) {
+            messageText.textContent = text;
+            messageText.className = "message-text " + type;
+            gameScreen.style.display = 'none';
+            messageScreen.style.display = 'block';
+        }
+
+        // Actualizează afișajul banilor
+        function updateMoneyDisplay() {
+            currentMoneyElement.textContent = currentMoney.toLocaleString();
+            
+            moneyContainer.innerHTML = '';
+            // Afișează doar primele 15 niveluri pentru a nu ocupa prea mult spațiu pe mobil
+            const displayValues = moneyValues.slice(0, 15);
+            
+            displayValues.forEach((value, index) => {
+                const moneyElement = document.createElement('div');
+                moneyElement.className = 'money-value ';
+                
+                if (index === currentQuestion) {
+                    moneyElement.classList.add('money-current');
+                } else if (index < currentQuestion) {
+                    moneyElement.classList.add('money-reached');
+                } else {
+                    moneyElement.classList.add('money-upcoming');
+                }
+                
+                moneyElement.textContent = value.toLocaleString() + ' RON';
+                moneyContainer.appendChild(moneyElement);
+            });
+        }
+
+        // Actualizează bara de progres
+        function updateProgressBar() {
+            const progress = (currentQuestion / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // Actualizează starea ajutoarelor
+        function updateLifelines() {
+            lifeline5050.disabled = !lifelines["50:50"];
+            lifelineFriend.disabled = !lifelines["prieten"];
+            lifelineAudience.disabled = !lifelines["public"];
+            lifelineChange.disabled = !lifelines["schimba"];
+        }
+
+        // Ajutor 50:50 - CORECTAT
+        lifeline5050.addEventListener('click', function() {
+            if (!lifelines["50:50"]) return;
+            
+            const question = questions[currentQuestion];
+            const wrongAnswers = [];
+            
+            // Găsește răspunsurile greșite
+            for (let i = 0; i < question.a.length; i++) {
+                if (i !== question.correct) {
+                    wrongAnswers.push(i);
+                }
+            }
+            
+            // Alege două răspunsuri greșite la întâmplare
+            const toHide = [];
+            toHide.push(wrongAnswers[Math.floor(Math.random() * wrongAnswers.length)]);
+            
+            // Elimină răspunsul deja selectat
+            const remainingWrong = wrongAnswers.filter(i => i !== toHide[0]);
+            toHide.push(remainingWrong[Math.floor(Math.random() * remainingWrong.length)]);
+            
+            // Setează doar pentru întrebarea curentă
+            hiddenAnswers = toHide;
+            lifelines["50:50"] = false;
+            updateLifelines();
+            showQuestion();
+        });
+
+        // Ajutor prieten
+        lifelineFriend.addEventListener('click', function() {
+            if (!lifelines["prieten"]) return;
+            
+            const question = questions[currentQuestion];
+            const correctAnswer = question.a[question.correct];
+            
+            // Simulează un sfat de la prieten (80% șanse să fie corect)
+            const isCorrectAdvice = Math.random() < 0.8;
+            let advice;
+            
+            if (isCorrectAdvice) {
+                advice = `Prietenul tău mecanic spune: "Sunt sigur că răspunsul corect este ${correctAnswer}".`;
+            } else {
+                // Alege un răspuns greșit la întâmplare
+                const wrongAnswers = [];
+                for (let i = 0; i < question.a.length; i++) {
+                    if (i !== question.correct) {
+                        wrongAnswers.push(question.a[i]);
+                    }
+                }
+                const wrongAnswer = wrongAnswers[Math.floor(Math.random() * wrongAnswers.length)];
+                advice = `Prietenul tău mecanic spune: "Cred că răspunsul corect este ${wrongAnswer}".`;
+            }
+            
+            alert(advice);
+            lifelines["prieten"] = false;
+            updateLifelines();
+        });
+
+        // Ajutor public
+        lifelineAudience.addEventListener('click', function() {
+            if (!lifelines["public"]) return;
+            
+            const question = questions[currentQuestion];
+            const correctIndex = question.correct;
+            
+            // Simulează votul publicului (răspunsul corect are cele mai mari șanse)
+            let percentages = [0, 0, 0, 0];
+            let total = 0;
+            
+            // Asignează procente, răspunsul corect având cel mai mare procent
+            for (let i = 0; i < 4; i++) {
+                if (i === correctIndex) {
+                    percentages[i] = Math.floor(Math.random() * 30) + 40; // 40-70%
+                } else {
+                    percentages[i] = Math.floor(Math.random() * 20) + 5; // 5-25%
+                }
+                total += percentages[i];
+            }
+            
+            // Ajustează pentru a face totalul 100%
+            const adjustment = 100 - total;
+            percentages[correctIndex] += adjustment;
+            
+            // Afișează rezultatele
+            let results = "Publicul a votat astfel:\n";
+            question.a.forEach((answer, index) => {
+                results += `${String.fromCharCode(65 + index)}. ${answer}: ${percentages[index]}%\n`;
+            });
+            
+            alert(results);
+            lifelines["public"] = false;
+            updateLifelines();
+        });
+
+        // Ajutor schimbă întrebarea
+        lifelineChange.addEventListener('click', function() {
+            if (!lifelines["schimba"]) return;
+            
+            // Găsește o altă întrebare la același nivel de dificultate
+            const availableQuestions = questions.filter((q, index) => index !== currentQuestion);
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            
+            // Înlocuiește întrebarea curentă
+            questions[currentQuestion] = availableQuestions[randomIndex];
+            
+            // Resetează răspunsurile ascunse doar pentru această întrebare
+            hiddenAnswers = [];
+            lifelines["schimba"] = false;
+            updateLifelines();
+            showQuestion();
+        });
+
+        // Evenimente butoane
+        startBtn.addEventListener('click', function() {
+            menuScreen.style.display = 'none';
+            gameScreen.style.display = 'flex';
+            initGame();
+        });
+
+        continueBtn.addEventListener('click', function() {
+            if (currentMoney === 1000000000 || currentQuestion >= questions.length) {
+                // Jocul s-a terminat, revenire la meniu
+                menuScreen.style.display = 'block';
+                messageScreen.style.display = 'none';
+            } else {
+                // Continuă la următoarea întrebare
+                messageScreen.style.display = 'none';
+                gameScreen.style.display = 'flex';
+                // Resetează răspunsurile ascunse pentru noua întrebare
+                hiddenAnswers = [];
+                showQuestion();
+            }
+        });
+
+        // Inițializare la încărcarea paginii
+        window.onload = function() {
+            menuScreen.style.display = 'block';
+        };
+    </script>
+</body>
+</html>
