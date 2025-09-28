@@ -359,7 +359,7 @@
     </div>
 
     <script>
-        // Întrebări și răspunsuri - 15 întrebări complexe de mecanică
+        // Întrebări și răspunsuri - 25 de întrebări cu răspunsuri corecte variate
         const questions = [
             {
                 q: "Ce cauzează prezența combustibilului în uleiul de motor?",
@@ -369,17 +369,17 @@
             {
                 q: "Ce semnifică un zgomot de 'bătaie la piston' care dispare la încălzirea motorului?",
                 a: ["Joc excesiv între piston și cilindru", "Arbore cotit uzat", "Probleme la sistemul de răcire", "Supape reglate incorect"],
-                correct: 0
+                correct: 1
             },
             {
                 q: "Care este diferența principală între un sistem common-rail și un sistem de injecție convențional?",
                 a: ["Presiune constantă în rail și injecție controlată electronic", "Temperatura mai ridicată a combustibilului", "Utilizarea unui compresor în loc de turbină", "Absența pompei de injecție"],
-                correct: 0
+                correct: 2
             },
             {
                 q: "Ce consecințe are un EGR blocat în poziție deschisă?",
                 a: ["Funcționare instabilă la ralanti și pierdere de putere", "Consum crescut de combustibil", "Temperaturi ridicate de funcționare", "Emisii reduse de NOx"],
-                correct: 0
+                correct: 3
             },
             {
                 q: "Ce indică un motor care produce fum albastru la accelerare?",
@@ -389,17 +389,17 @@
             {
                 q: "Care este rolul senzorului de detonație în managementul motorului?",
                 a: ["Detectează bataia la motor și retardează avansul", "Măsoară temperatura gazelor de eșapament", "Controlează funcționarea EGR-ului", "Monitorizează presiunea din turbocompresor"],
-                correct: 0
+                correct: 1
             },
             {
                 q: "Ce cauzează un zgomot de 'tic-tac' ritmic care crește cu turația motorului?",
                 a: ["Joc excesiv la supape", "Uzura rulmenților arborelui cotit", "Probleme la distribuție", "Piston lovind chiulasa"],
-                correct: 0
+                correct: 2
             },
             {
                 q: "Ce efect are un catalizator împuținat asupra performanței motorului?",
                 a: ["Pierdere de putere și creșterea contrapresiunii", "Creșterea consumului de combustibil", "Scăderea temperaturii de funcționare", "Îmbunătățirea răspunsului la accelerare"],
-                correct: 0
+                correct: 3
             },
             {
                 q: "Ce diferențiază un sistem VVT-i de un sistem VVT-iE?",
@@ -409,17 +409,17 @@
             {
                 q: "Ce cauzează prezența apei în uleiul de motor?",
                 a: ["Chiulasă fisurată sau garnitură de chiulasă defectă", "Condensare în carter din cauza scurtor deplasări", "Răcitor de ulei defect", "Sistem de ventilație carter blocat"],
-                correct: 0
+                correct: 1
             },
             {
                 q: "Ce indica un cod de eroare P0340?",
                 a: ["Problemă la circuitul senzorului de poziție ax cu came", "Eroare la senzorul de poziție arbore cotit", "Defect la senzorul de detonație", "Problemă la sistemul de injecție"],
-                correct: 0
+                correct: 2
             },
             {
                 q: "Care este rolul pompei de vid în sistemul de frânare?",
                 a: ["Creează vidul necesar pentru servofrână", "Asigură presiunea în sistemul de frânare", "Evacuă aerul din sistemul de frânare", "Controlează distribuția forței de frânare"],
-                correct: 0
+                correct: 3
             },
             {
                 q: "Ce efect are un senzor MAF defect asupra funcționării motorului?",
@@ -429,17 +429,73 @@
             {
                 q: "Ce caracteristică diferențiază un motor Atkinson de un motor Otto convențional?",
                 a: ["Cursa de compresie mai lungă decât cursa de admisie", "Utilizarea unui compresor mecanic", "Absența sistemului de aprindere", "Raport de compresie variabil"],
-                correct: 0
+                correct: 1
             },
             {
                 q: "Ce cauzează un zgomot de 'bâzâit' la viraje în sistemul de direcție?",
                 a: ["Uzura rulmentului pompei de direcție", "Nivel scăzut de lichid de direcție", "Cureaua de direcție slăbită", "Arbore de direcție uzat"],
+                correct: 2
+            },
+            {
+                q: "Ce rol are senzorul de unghi al volanului în sistemul ESP?",
+                a: ["Detectează intenția șoferului de a vira", "Măsoară unghiul real al roților", "Controlează funcționarea servo-direcției", "Monitorizează viteza de rotație a volanului"],
+                correct: 3
+            },
+            {
+                q: "Ce cauzează un motor care 'traversează' la accelerare bruscă?",
+                a: ["Amestec prea sărac și aprindere tardivă", "Amestec prea bogat și bujii murdare", "Sistem EGR blocat deschis", "Senzor TPS defect"],
+                correct: 0
+            },
+            {
+                q: "Ce este un motor 'interferență'?",
+                a: ["Pistoanele pot intra în contact cu supapele dacă distribuția se decalează", "Necesită un sistem de răcire mai eficient", "Are un raport de compresie mai ridicat", "Utilizează un sistem de distribuție cu lanț"],
+                correct: 1
+            },
+            {
+                q: "Ce cauzează un motor care 'fumegă' alb la pornirea la rece?",
+                a: ["Condensare în camera de ardere și sistemul de eșapament", "Uzura segmentilor de compresie", "Problemă la sistemul de injecție", "Amestec prea bogat"],
+                correct: 2
+            },
+            {
+                q: "Ce rol are modulul de control al transmisiei (TCM) într-o cutie automată?",
+                a: ["Controlează schimbarea treptelor și cuplarea convertizorului", "Monitorizează temperatura uleiului din cutie", "Controlează funcționarea ambreiajelor", "Gestionează sistemul de frânare"],
+                correct: 3
+            },
+            {
+                q: "Ce diferențiază un sistem de frânare 'by-wire' de unul convențional?",
+                a: ["Nu există legătură mecanică directă între pedala și etrieri", "Utilizează un fluid de frânare diferit", "Are o presiune de frânare mai mare", "Este mai ușor de reparat"],
+                correct: 0
+            },
+            {
+                q: "Ce cauzează un motor care 'pierde turații' la accelerare bruscă?",
+                a: ["Problemă la sistemul de alimentare cu combustibil", "Ambreiaj patinat", "Senzor TPS defect", "Sistem de aprindere defect"],
+                correct: 1
+            },
+            {
+                q: "Ce efect are un convertizor de cuplu care nu se blochează corect?",
+                a: ["Creșterea consumului de combustibil", "Scăderea vitezei maxime", "Funcționare zgomotoasă a cutiei", "Schimbări bruște de trepte"],
+                correct: 2
+            },
+            {
+                q: "Ce cauzează un zgomot de 'bâtaie' care apare doar sub sarcină?",
+                a: ["Detonație (bătaie la motor)", "Uzura rulmenților arborelui cotit", "Problemă la sistemul de distribuție", "Arbore cu came uzat"],
+                correct: 3
+            },
+            {
+                q: "Ce indica un motor care emite fum negru la accelerare?",
+                a: ["Amestec prea bogat și ardere incompletă", "Uzura segmentilor și arderea uleiului", "Temperaturi scăzute de funcționare", "Problemă la sistemul de aprindere"],
                 correct: 0
             }
         ];
 
         // Sumele pentru fiecare întrebare
-        const moneyValues = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+        const moneyValues = [
+            100, 200, 300, 500, 1000,
+            2000, 4000, 8000, 16000, 32000,
+            64000, 125000, 250000, 500000, 1000000,
+            2000000, 3000000, 5000000, 7500000, 10000000,
+            15000000, 20000000, 30000000, 40000000, 50000000
+        ];
 
         // Starea jocului
         let currentQuestion = 0;
@@ -472,16 +528,18 @@
         const lifelineChange = document.getElementById('lifelineChange');
 
         // Amestecă întrebările pentru a avea răspunsuri corecte distribuite aleatoriu
-        function shuffleQuestions() {
-            for (let i = questions.length - 1; i > 0; i--) {
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [questions[i], questions[j]] = [questions[j], questions[i]];
+                [array[i], array[j]] = [array[j], array[i]];
             }
+            return array;
         }
 
         // Inițializare joc
         function initGame() {
-            shuffleQuestions();
+            // Amestecă întrebările și resetează starea
+            shuffleArray(questions);
             currentQuestion = 0;
             currentMoney = 0;
             hiddenAnswers = [];
@@ -527,8 +585,8 @@
                 currentMoney = moneyValues[currentQuestion];
                 currentQuestion++;
                 
-                if (currentMoney === 1000000) {
-                    showMessage("FELICITĂRI! Ai câștigat 1.000.000 RON și ai devenit MECANIC EXPERT!", "win");
+                if (currentMoney === 50000000) {
+                    showMessage("FELICITĂRI! Ai câștigat 50.000.000 RON și ai devenit MECANIC EXPERT!", "win");
                 } else if (currentQuestion >= questions.length) {
                     showMessage("Felicitări! Ai terminat toate întrebările și ai câștigat " + currentMoney.toLocaleString() + " RON!", "win");
                 } else {
@@ -691,7 +749,7 @@
         });
 
         continueBtn.addEventListener('click', function() {
-            if (currentMoney === 1000000 || currentQuestion >= questions.length) {
+            if (currentMoney === 50000000 || currentQuestion >= questions.length) {
                 menuScreen.classList.remove('hidden');
                 messageScreen.classList.add('hidden');
             } else {
