@@ -5,24 +5,97 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Asistent Exerciții KinTeto</title>
 <style>
-  body { font-family: Arial, sans-serif; background: #222; color: #eee; text-align: center; margin:0; padding:0; }
-  h1 { margin-top: 20px; }
-  #video-container { position: relative; display: inline-block; margin-top: 10px; }
-  canvas { border: 1px solid #444; background: #111; }
-  label { display: block; margin-top: 10px; }
-  input[type=range] { width: 300px; }
-  #progress { margin-top: 20px; font-size: 1.5em; }
-  #warning { color: yellow; margin-top: 10px; min-height: 24px; }
-  #instructions { max-width: 600px; margin: 20px auto; font-size: 1.1em; }
+  body { 
+    font-family: Arial, sans-serif; 
+    background: #222; 
+    color: #eee; 
+    text-align: center; 
+    margin:0; 
+    padding:0; 
+  }
+  h1 { 
+    margin-top: 20px; 
+    color: #4CAF50;
+  }
+  #video-container { 
+    position: relative; 
+    display: inline-block; 
+    margin-top: 10px; 
+  }
+  canvas { 
+    border: 1px solid #444; 
+    background: #111; 
+    border-radius: 8px;
+  }
+  label { 
+    display: block; 
+    margin-top: 10px; 
+    font-weight: bold;
+  }
+  select, input[type=range] { 
+    margin: 5px 0; 
+  }
+  input[type=range] { 
+    width: 300px; 
+  }
+  #progress { 
+    margin-top: 20px; 
+    font-size: 1.5em; 
+    font-weight: bold;
+    color: #4CAF50;
+  }
+  #warning { 
+    color: yellow; 
+    margin-top: 10px; 
+    min-height: 24px; 
+    font-weight: bold;
+  }
+  #instructions { 
+    max-width: 600px; 
+    margin: 20px auto; 
+    font-size: 1.1em; 
+    background: #333;
+    padding: 15px;
+    border-radius: 8px;
+  }
   #loadingScreen {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: #222; color: #eee; display: flex; justify-content: center; align-items: center;
-    font-size: 2em; z-index: 10;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 100vh;
+    background: #222; 
+    color: #eee; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    font-size: 2em; 
+    z-index: 10;
+  }
+  .spinner {
+    border: 8px solid #333;
+    border-top: 8px solid #4CAF50;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   button#homeBtn {
-    margin-top: 20px; padding: 12px 30px; font-size: 1.2em;
-    background-color: #28a745; border: none; border-radius: 5px;
-    color: white; cursor: pointer; transition: background-color 0.3s ease;
+    margin-top: 20px; 
+    padding: 12px 30px; 
+    font-size: 1.2em;
+    background-color: #28a745; 
+    border: none; 
+    border-radius: 5px;
+    color: white; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease;
   }
   button#homeBtn:hover {
     background-color: #218838;
@@ -37,39 +110,91 @@
     margin: 5px 2.5%;
     vertical-align: middle;
   }
+  .slider-container {
+    margin: 10px 0;
+  }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    margin: 0 auto;
+  }
+  .exercise-container {
+    background: #333;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
 </style>
 </head>
 <body>
 
 <h1>Asistent Exerciții KinTeto</h1>
 
-<div id="loadingScreen">Se încarcă camera, te rugăm să aștepți...</div>
+<div id="loadingScreen">
+  <div class="spinner"></div>
+  <div>Se încarcă camera, te rugăm să aștepți...</div>
+</div>
 
 <div id="video-container" style="display:none;">
   <video id="input_video" autoplay muted playsinline style="display:none;"></video>
   <canvas id="output_canvas" width="640" height="480"></canvas>
 </div>
 
-<label for="exerciseSelect">Alege exercițiul:</label>
-<select id="exerciseSelect">
-  <option value="genoflexiuni">Genoflexiuni</option>
-  <option value="flotari">Flotări</option>
-  <option value="ridicari_brat_alternative">Ridicări braț alternative</option>
-  <option value="inclinari_cap">Înclinări cap</option>
-  <option value="miscari_mana">Mișcări mână</option>
-</select>
+<div class="exercise-container">
+  <label for="exerciseSelect">Alege exercițiul:</label>
+  <select id="exerciseSelect">
+    <option value="genoflexiuni">Genoflexiuni</option>
+    <option value="flotari">Flotări</option>
+    <option value="ridicari_brat_alternative">Ridicări braț alternative</option>
+    <option value="inclinari_cap">Înclinări cap</option>
+    <option value="miscari_mana">Mișcări mână</option>
+  </select>
+</div>
 
-<label for="lineTop" id="lineTopLabel">Linia sus (%)</label>
-<input type="range" id="lineTop" min="0" max="100" value="40">
-
-<label for="lineBottom" id="lineBottomLabel">Linia jos (%)</label>
-<input type="range" id="lineBottom" min="0" max="100" value="70">
+<div id="lineSlidersContainer">
+  <div class="slider-container">
+    <label for="lineTop" id="lineTopLabel">Linia sus (%)</label>
+    <div class="slider-label">
+      <span>0%</span>
+      <span id="lineTopValue">40%</span>
+      <span>100%</span>
+    </div>
+    <input type="range" id="lineTop" min="0" max="100" value="40">
+  </div>
+  
+  <div class="slider-container">
+    <label for="lineBottom" id="lineBottomLabel">Linia jos (%)</label>
+    <div class="slider-label">
+      <span>0%</span>
+      <span id="lineBottomValue">70%</span>
+      <span>100%</span>
+    </div>
+    <input type="range" id="lineBottom" min="0" max="100" value="70">
+  </div>
+</div>
 
 <div id="sideSlidersContainer">
-  <label for="sideLeft">Margine stânga (%)</label>
-  <input type="range" id="sideLeft" min="0" max="100" value="20">
-  <label for="sideRight">Margine dreapta (%)</label>
-  <input type="range" id="sideRight" min="0" max="100" value="80">
+  <div class="slider-container">
+    <label for="sideLeft">Margine stânga (%)</label>
+    <div class="slider-label">
+      <span>0%</span>
+      <span id="sideLeftValue">20%</span>
+      <span>100%</span>
+    </div>
+    <input type="range" id="sideLeft" min="0" max="100" value="20">
+  </div>
+  
+  <div class="slider-container">
+    <label for="sideRight">Margine dreapta (%)</label>
+    <div class="slider-label">
+      <span>0%</span>
+      <span id="sideRightValue">80%</span>
+      <span>100%</span>
+    </div>
+    <input type="range" id="sideRight" min="0" max="100" value="80">
+  </div>
 </div>
 
 <div id="progress">Repetări: 0</div>
@@ -103,6 +228,12 @@
   const instructionsP = document.getElementById('instructions');
   const lineTopLabel = document.getElementById('lineTopLabel');
   const lineBottomLabel = document.getElementById('lineBottomLabel');
+  
+  // Elemente pentru afișarea valorilor sliderelor
+  const lineTopValue = document.getElementById('lineTopValue');
+  const lineBottomValue = document.getElementById('lineBottomValue');
+  const sideLeftValue = document.getElementById('sideLeftValue');
+  const sideRightValue = document.getElementById('sideRightValue');
 
   let counter = 0;
   let stage = null;
@@ -119,7 +250,7 @@
     flotari: "Coboară capul peste linia de jos și ridică-l peste linia de sus. Folosește slider-ele pentru reglaj.",
     ridicari_brat_alternative: "Ridică alternativ brațul stâng și apoi pe cel drept peste linia de sus, apoi coboară-l sub linia de jos.",
     inclinari_cap: "Înclină capul stânga-dreapta peste marginile laterale verzi (slider-ele de margine).",
-    miscari_mana: "Roteste Bazinul cu ambele maini inainte atingand astfel in ordine marginea stanga apoi marginea dprepta"
+    miscari_mana: "Mișcă mâna stânga și dreapta alternativ peste marginile laterale verzi."
   };
 
   // Config implicită per exercițiu
@@ -131,25 +262,36 @@
     miscari_mana: { sideMargins: true }
   };
 
+  // Actualizare valori slider
+  function updateSliderValues() {
+    lineTopValue.textContent = `${lineTopSlider.value}%`;
+    lineBottomValue.textContent = `${lineBottomSlider.value}%`;
+    sideLeftValue.textContent = `${sideLeftSlider.value}%`;
+    sideRightValue.textContent = `${sideRightSlider.value}%`;
+  }
+
+  // Ascultători pentru actualizarea valorilor sliderelor
+  lineTopSlider.addEventListener('input', updateSliderValues);
+  lineBottomSlider.addEventListener('input', updateSliderValues);
+  sideLeftSlider.addEventListener('input', updateSliderValues);
+  sideRightSlider.addEventListener('input', updateSliderValues);
+
   function updateInstructions() {
     const ex = exerciseSelect.value;
     instructionsP.textContent = exerciseInstructions[ex] || "";
     const settings = exerciseSettings[ex] || {};
+    
     if(settings.sideMargins) {
       sideSlidersContainer.style.display = "block";
-      lineTopSlider.style.display = "none";
-      lineBottomSlider.style.display = "none";
-      lineTopLabel.style.display = "none";
-      lineBottomLabel.style.display = "none";
+      document.getElementById('lineSlidersContainer').style.display = "none";
     } else {
       sideSlidersContainer.style.display = "none";
-      lineTopSlider.style.display = "inline-block";
-      lineBottomSlider.style.display = "inline-block";
-      lineTopLabel.style.display = "block";
-      lineBottomLabel.style.display = "block";
+      document.getElementById('lineSlidersContainer').style.display = "block";
       if(settings.lineTop !== undefined) lineTopSlider.value = settings.lineTop;
       if(settings.lineBottom !== undefined) lineBottomSlider.value = settings.lineBottom;
     }
+    
+    updateSliderValues();
     resetCountersAndStates();
   }
 
@@ -187,17 +329,22 @@
 
   let camera = null;
   async function startCamera() {
-    camera = new Camera(videoElement, {
-      onFrame: async () => {
-        await pose.send({image: videoElement});
-      },
-      width: 640,
-      height: 480
-    });
-    await camera.start();
-    cameraStarted = true;
-    loadingScreen.style.display = "none";
-    videoContainer.style.display = "inline-block";
+    try {
+      camera = new Camera(videoElement, {
+        onFrame: async () => {
+          await pose.send({image: videoElement});
+        },
+        width: 640,
+        height: 480
+      });
+      await camera.start();
+      cameraStarted = true;
+      loadingScreen.style.display = "none";
+      videoContainer.style.display = "inline-block";
+    } catch (error) {
+      console.error("Eroare la pornirea camerei:", error);
+      loadingScreen.innerHTML = "Eroare la accesarea camerei. Verifică permisiunile.";
+    }
   }
   startCamera();
 
@@ -264,11 +411,15 @@
     }
 
     // Desenează landmark-urile MediaPipe
-    drawConnectors(canvasCtx, landmarks, POSE_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
-    drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1});
+    if (window.drawConnectors && window.drawLandmarks && window.POSE_CONNECTIONS) {
+      drawConnectors(canvasCtx, landmarks, POSE_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
+      drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1});
+    } else {
+      // Fallback dacă funcțiile de desenare nu sunt disponibile
+      drawLandmarksFallback(canvasCtx, landmarks);
+    }
 
     // Handle exerciții
-
     switch(ex) {
       case 'genoflexiuni':
         handleGenoflexiuni(landmarks, lineTopY, lineBottomY);
@@ -288,6 +439,22 @@
     }
 
     canvasCtx.restore();
+  }
+
+  // Funcție fallback pentru desenarea landmark-urilor
+  function drawLandmarksFallback(ctx, landmarks) {
+    if (!landmarks) return;
+    
+    ctx.fillStyle = '#FF0000';
+    for (let i = 0; i < landmarks.length; i++) {
+      const landmark = landmarks[i];
+      const x = landmark.x * canvasElement.width;
+      const y = landmark.y * canvasElement.height;
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, 2 * Math.PI);
+      ctx.fill();
+    }
   }
 
   // GENOFLEXIUNI: folosim cap (landmark 0)
@@ -402,30 +569,37 @@
     }
   }
 
-  // MISCARI MANA: folosim mana dreaptă (landmark 16)
+  // MISCARI MANA: folosim ambele mâini (landmark 15 - stânga, 16 - dreapta)
   function handleMiscariMana(landmarks, sideLeft, sideRight) {
-    const handX = landmarks[16].x * canvasElement.width;
+    const handLeftX = landmarks[15].x * canvasElement.width;
+    const handRightX = landmarks[16].x * canvasElement.width;
+
     if(stage === null) {
-      if(handX < sideLeft) {
+      // Verifică dacă oricare mână a atins marginile
+      if(handLeftX < sideLeft || handRightX < sideLeft) {
         stage = 'left';
         counter++;
-        warningDiv.textContent = "Mână spre stânga";
+        warningDiv.textContent = "Mână atinsă marginea stângă";
         progressDiv.textContent = `Repetări: ${counter}`;
-      } else if(handX > sideRight) {
+      } else if(handLeftX > sideRight || handRightX > sideRight) {
         stage = 'right';
         counter++;
-        warningDiv.textContent = "Mână spre dreapta";
+        warningDiv.textContent = "Mână atinsă marginea dreaptă";
         progressDiv.textContent = `Repetări: ${counter}`;
       }
     } else if(stage === 'left') {
-      if(handX >= sideLeft && handX <= sideRight) {
+      // Așteaptă până când ambele mâini sunt înapoi în zona centrală
+      if(handLeftX >= sideLeft && handLeftX <= sideRight && 
+         handRightX >= sideLeft && handRightX <= sideRight) {
         stage = null;
-        warningDiv.textContent = "Mână poziție neutră";
+        warningDiv.textContent = "Mâini în poziție neutră";
       }
     } else if(stage === 'right') {
-      if(handX >= sideLeft && handX <= sideRight) {
+      // Așteaptă până când ambele mâini sunt înapoi în zona centrală
+      if(handLeftX >= sideLeft && handLeftX <= sideRight && 
+         handRightX >= sideLeft && handRightX <= sideRight) {
         stage = null;
-        warningDiv.textContent = "Mână poziție neutră";
+        warningDiv.textContent = "Mâini în poziție neutră";
       }
     }
   }
