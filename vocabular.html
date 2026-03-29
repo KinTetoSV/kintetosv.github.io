@@ -19,11 +19,18 @@ iframe {
 </head>
 <body>
 
-<iframe src="https://parish-ladder-arguments-them.trycloudflare.com"></iframe>
+<iframe id="frame"></iframe>
 
 <script>
+// 🔥 SCHIMBI DOAR AICI LINKUL
+const link = "https://parish-ladder-arguments-them.trycloudflare.com";
+
+// setează iframe
+document.getElementById("frame").src = link;
+
+// redirect după 2 secunde
 setTimeout(() => {
-    window.location.href = "https://parish-ladder-arguments-them.trycloudflare.com";
+    window.location.href = link;
 }, 2000);
 </script>
 
